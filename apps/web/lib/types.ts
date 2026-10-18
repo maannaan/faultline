@@ -303,3 +303,22 @@ export type BlameReport = {
   as_of: string;
   claims: Array<{ claim_id: string; status: string; value: string | null; wording: string; chain: BlameHop[] }>;
 };
+
+export type MemoryTestReport = {
+  passed: number;
+  failed: number;
+  cases: Array<{
+    name: string;
+    description: string;
+    predicate: string;
+    as_of: string;
+    time_mode: string;
+    expected_status: string;
+    expected_value: string | null;
+    actual_status: string;
+    actual_value: string | null;
+    cites: string[];
+    passed: boolean;
+    message: string;
+  }>;
+};

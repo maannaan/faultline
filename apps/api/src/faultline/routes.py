@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 
 from faultline.auth import require_tenant
 from faultline.bench.ablation import run_ablation
+from faultline.bench.memory_tests import load_cases, run_cases
 from faultline.coordination.handoff import CoordinationService
 from faultline.graph.impact import assertion_impact
 from faultline.graph.subgraph import build_graph_view
@@ -34,6 +35,7 @@ from faultline.schemas.models import (
     HandoffCreate,
     HealthResponse,
     ImpactReport,
+    MemoryTestReport,
     NoteCreate,
     NoteIngestResult,
     ReplayCreate,
@@ -73,6 +75,14 @@ def get_lab(request: Request) -> LabService:
 @router.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     return HealthResponse(status="ok")
+
+
+@router.get("/v1/benchmarks/memory-tests", response_model=MemoryTestReport)
+def get_memory_tests(
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+) -> MemoryTestReport:
+    return run_cases(request.app.state.store.graph_for_tenant(tenant_id), load_cases())
 
 
 @router.post("/v1/benchmarks/ablation", response_model=AblationReport)

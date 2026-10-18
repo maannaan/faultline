@@ -1,0 +1,42 @@
+# Memory regression tests for the seeded Project Atlas graph.
+# Each case asks one question at one cutoff and states the answer memory must give.
+# Run locally with `make memtest`. CI runs them on every push.
+entity: project-atlas
+cases:
+  - name: early-region
+    description: Before the correction, only region-a was known.
+    predicate: deploy_region
+    as_of: "2026-10-15T12:00:00Z"
+    expect: {status: supported, value: region-a, cites: [assert-region-a]}
+
+  - name: late-region
+    description: The reviewed change record supersedes region-a.
+    predicate: deploy_region
+    as_of: "2026-10-16T13:00:00Z"
+    expect: {status: supported, value: region-b, cites: [assert-region-b]}
+
+  - name: late-oncall-stays-disputed
+    description: Two reviewed sources disagree, so no owner is chosen.
+    predicate: oncall_owner
+    as_of: "2026-10-16T13:00:00Z"
+    expect: {status: disputed, value: null, cites: [assert-oncall-jordan, assert-oncall-priya]}
+
+  - name: counterfactual-without-change-record
+    description: Excluding source-change-002 falls back to region-a.
+    predicate: deploy_region
+    as_of: "2026-10-16T13:00:00Z"
+    exclude_source_ids: [source-change-002]
+    expect: {status: supported, value: region-a, cites: [assert-region-a]}
+
+  - name: no-memory-before-first-note
+    description: Nothing was recorded yet, so the answer is insufficient.
+    predicate: deploy_region
+    as_of: "2026-10-15T08:00:00Z"
+    expect: {status: insufficient, value: null, cites: []}
+
+  - name: valid-time-does-not-invent-intervals
+    description: On-call notes carry no validity interval, so valid-time mode cannot use them.
+    predicate: oncall_owner
+    as_of: "2026-10-16T13:00:00Z"
+    time_mode: valid
+    expect: {status: insufficient, value: null, cites: []}

@@ -27,12 +27,12 @@ const LINES = [
   },
   {
     cmd: "faultline impact assert-region-a",
-    out: "snapshots, replays and handoffs that relied on it → flagged stale",
+    out: "replays and handoffs that saw it as current → flagged outdated",
     href: "/app/impact",
   },
   {
     cmd: "faultline test memory-tests.yaml",
-    out: "memory regression cases run in CI on every push",
+    out: "6 passed · the same cases run in CI on every push",
     href: "/app/bench",
   },
 ] as const;

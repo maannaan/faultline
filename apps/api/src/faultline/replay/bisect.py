@@ -21,6 +21,25 @@ from faultline.replay.diff import evidence_diff
 from faultline.schemas.models import BisectProbe, BisectResult
 
 
+def answer_at(
+    graph: Any,
+    *,
+    entity_id: str,
+    predicate: str,
+    as_of: str,
+    time_mode: str = "known",
+    exclude_source_ids: frozenset[str] = frozenset(),
+) -> tuple[list[SnapshotMember], AnswerClaimDraft]:
+    """Members and the deterministic claim for one entity at one cutoff, read-only."""
+    rows = [
+        _observed(row)
+        for row in repo.observed_assertions(graph, as_of)
+        if str(row["entity_id"]) == entity_id and str(row["source_id"]) not in exclude_source_ids
+    ]
+    members, _ = classify_snapshot(rows, as_of=as_of, time_mode=time_mode)
+    return members, select_claim(predicate, members)
+
+
 def run_bisect(
     graph: Any,
     *,
@@ -39,13 +58,9 @@ def run_bisect(
         raise FaultlineError("validation_error", "good_as_of must be before bad_as_of", 400)
 
     def probe(cutoff: str) -> tuple[list[SnapshotMember], AnswerClaimDraft]:
-        rows = [
-            _observed(row)
-            for row in repo.observed_assertions(graph, cutoff)
-            if str(row["entity_id"]) == entity_id
-        ]
-        members, _ = classify_snapshot(rows, as_of=cutoff, time_mode=time_mode)
-        return members, select_claim(predicate, members)
+        return answer_at(
+            graph, entity_id=entity_id, predicate=predicate, as_of=cutoff, time_mode=time_mode
+        )
 
     good_members, good_claim = probe(good_at)
     bad_members, bad_claim = probe(bad_at)

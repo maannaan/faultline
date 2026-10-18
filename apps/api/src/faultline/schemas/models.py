@@ -558,3 +558,24 @@ class BlameReport(BaseModel):
     snapshot_id: str
     as_of: str
     claims: list[BlameClaim]
+
+
+class MemoryTestCase(BaseModel):
+    name: str
+    description: str
+    predicate: str
+    as_of: str
+    time_mode: str
+    expected_status: str
+    expected_value: str | None = None
+    actual_status: str
+    actual_value: str | None = None
+    cites: list[str]
+    passed: bool
+    message: str
+
+
+class MemoryTestReport(BaseModel):
+    passed: int
+    failed: int
+    cases: list[MemoryTestCase]

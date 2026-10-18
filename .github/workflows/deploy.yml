@@ -43,6 +43,8 @@ jobs:
           exit 1
       - name: Tests
         run: uv run pytest -q
+      - name: Memory regression tests
+        run: uv run python -m faultline.bench.memory_tests
 
   web:
     runs-on: ubuntu-latest

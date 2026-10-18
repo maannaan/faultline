@@ -1,10 +1,11 @@
 "use client";
 
-import { CircleCheck, FlaskConical, Scissors } from "lucide-react";
+import { CircleCheck, CircleX, FlaskConical, ListChecks, RotateCcw, Scissors } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EmptyState, ErrorBanner, PageHeader, StatusPill } from "@/components/ui";
-import type { AblationReport, BenchClaim } from "@/lib/types";
+import type { AblationReport, BenchClaim, MemoryTestReport } from "@/lib/types";
+import { GITHUB_URL } from "@/components/app-nav";
 
 type Props = {
   apiError: string | null;
@@ -81,6 +82,8 @@ export function BenchView({ apiError }: Props) {
         </motion.p>
       ) : null}
 
+      {apiError ? null : <MemoryTests />}
+
       <section>
         <div className="mb-4 flex items-center gap-2">
           <FlaskConical className="size-4 text-fault" />
@@ -125,6 +128,83 @@ export function BenchView({ apiError }: Props) {
         </p>
       </section>
     </div>
+  );
+}
+
+function MemoryTests() {
+  const [report, setReport] = useState<MemoryTestReport | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+  const [runKey, setRunKey] = useState(0);
+
+  const run = useCallback(async () => {
+    setPending(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/faultline/v1/benchmarks/memory-tests", { cache: "no-store" });
+      const body = (await response.json()) as MemoryTestReport & { error?: { message?: string } };
+      if (!response.ok) throw new Error(body.error?.message || "Memory tests could not run.");
+      setReport(body);
+      setRunKey((key) => key + 1);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Memory tests could not run.");
+    } finally {
+      setPending(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    run();
+  }, [run]);
+
+  return (
+    <section className="panel overflow-hidden">
+      <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3 sm:px-5">
+        <ListChecks className="size-4 text-fault" />
+        <h2 className="text-sm font-medium">Memory regression tests</h2>
+        <span className="mono text-[11px] text-dim">memory-tests.yaml</span>
+        {report ? (
+          <span className={`pill ${report.failed ? "pill-disputed" : "pill-current"}`}>
+            {report.passed} passed{report.failed ? ` · ${report.failed} failed` : ""}
+          </span>
+        ) : null}
+        <div className="ml-auto flex items-center gap-2">
+          <a href={`${GITHUB_URL}/actions`} className="text-xs text-dim hover:text-ink">
+            runs in CI on every push →
+          </a>
+          <button type="button" onClick={run} disabled={pending} className="btn btn-ghost !px-2.5 !py-1.5 text-xs">
+            <RotateCcw className="size-3.5" /> {pending ? "Running…" : "Re-run"}
+          </button>
+        </div>
+      </div>
+      {error ? <p className="px-5 py-4 text-sm text-disputed">{error}</p> : null}
+      {report ? (
+        <ul key={runKey} className="divide-y divide-line">
+          {report.cases.map((item, index) => (
+            <motion.li
+              key={item.name}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.08 }}
+              className="grid gap-2 px-4 py-3 sm:grid-cols-[22px_1fr_auto] sm:items-center sm:px-5"
+            >
+              {item.passed ? <CircleCheck className="size-4 text-ok" /> : <CircleX className="size-4 text-disputed" />}
+              <div className="min-w-0">
+                <p className="mono text-[13px] text-ink">{item.name}</p>
+                <p className="text-xs text-dim">
+                  {item.description} <span className="mono">· {item.predicate} @ {item.as_of} {item.time_mode}</span>
+                </p>
+                {item.message ? <p className="mono mt-1 text-[11px] text-disputed">{item.message}</p> : null}
+              </div>
+              <div className="flex items-center gap-2">
+                <StatusPill status={item.actual_status} />
+                <span className="mono text-xs text-muted">{item.actual_value ?? "—"}</span>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
+      ) : null}
+    </section>
   );
 }
 
