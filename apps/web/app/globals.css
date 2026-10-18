@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f4efe6;
+  --ink: #1c1915;
+  --muted: #6d645a;
+  --line: #ddd4c6;
+  --card: #fffdf8;
+  --fault: #b8431f;
+  --current: #1f6b45;
+  --disputed: #9a3412;
+  --superseded: #6e675f;
+  --unverified: #8a5a12;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(180deg, rgba(184, 67, 31, 0.08), transparent 220px),
+    var(--paper);
+  color: var(--ink);
+  font-family: "Sora", sans-serif;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.status-current { color: var(--current); background: #e7f6ee; }
+.status-superseded { color: var(--superseded); background: #efeae4; }
+.status-disputed { color: var(--disputed); background: #fde8df; }
+.status-unverified { color: var(--unverified); background: #fff1d6; }

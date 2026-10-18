@@ -1,0 +1,201 @@
+{
+  "sample_size": 3,
+  "graph": {
+    "nodes": 26,
+    "edges": 49,
+    "assertions": 4
+  },
+  "limitations": "These scores are three synthetic questions on one seeded project. They do not show a general advantage over other memory systems.",
+  "methods": [
+    {
+      "method": "no_memory",
+      "correct": 0,
+      "questions": 3,
+      "evidence_coverage": 0.0,
+      "stale_answers": 0,
+      "conflict_detections": 0,
+      "estimated_tokens": 28,
+      "token_estimate": "character_count_divided_by_4",
+      "latency_ms": 0.02,
+      "rows": [
+        {
+          "question_id": "early-region",
+          "status": "insufficient",
+          "value": null,
+          "evidence_ids": [],
+          "correct": false,
+          "stale": false,
+          "evidence_covered": false,
+          "estimated_tokens": 11
+        },
+        {
+          "question_id": "late-region",
+          "status": "insufficient",
+          "value": null,
+          "evidence_ids": [],
+          "correct": false,
+          "stale": false,
+          "evidence_covered": false,
+          "estimated_tokens": 11
+        },
+        {
+          "question_id": "late-oncall",
+          "status": "insufficient",
+          "value": null,
+          "evidence_ids": [],
+          "correct": false,
+          "stale": false,
+          "evidence_covered": false,
+          "estimated_tokens": 6
+        }
+      ]
+    },
+    {
+      "method": "flat_summary",
+      "correct": 1,
+      "questions": 3,
+      "evidence_coverage": 0.0,
+      "stale_answers": 1,
+      "conflict_detections": 0,
+      "estimated_tokens": 62,
+      "token_estimate": "character_count_divided_by_4",
+      "latency_ms": 0.1,
+      "rows": [
+        {
+          "question_id": "early-region",
+          "status": "supported",
+          "value": "region-b",
+          "evidence_ids": [],
+          "correct": false,
+          "stale": true,
+          "evidence_covered": false,
+          "estimated_tokens": 21
+        },
+        {
+          "question_id": "late-region",
+          "status": "supported",
+          "value": "region-b",
+          "evidence_ids": [],
+          "correct": true,
+          "stale": false,
+          "evidence_covered": false,
+          "estimated_tokens": 21
+        },
+        {
+          "question_id": "late-oncall",
+          "status": "supported",
+          "value": "Jordan",
+          "evidence_ids": [],
+          "correct": false,
+          "stale": false,
+          "evidence_covered": false,
+          "estimated_tokens": 20
+        }
+      ]
+    },
+    {
+      "method": "faultline",
+      "correct": 3,
+      "questions": 3,
+      "evidence_coverage": 1.0,
+      "stale_answers": 0,
+      "conflict_detections": 1,
+      "estimated_tokens": 59,
+      "token_estimate": "character_count_divided_by_4",
+      "latency_ms": 605.88,
+      "rows": [
+        {
+          "question_id": "early-region",
+          "status": "supported",
+          "value": "region-a",
+          "evidence_ids": [
+            "assert-region-a"
+          ],
+          "correct": true,
+          "stale": false,
+          "evidence_covered": true,
+          "estimated_tokens": 11
+        },
+        {
+          "question_id": "late-region",
+          "status": "supported",
+          "value": "region-b",
+          "evidence_ids": [
+            "assert-region-b"
+          ],
+          "correct": true,
+          "stale": false,
+          "evidence_covered": true,
+          "estimated_tokens": 24
+        },
+        {
+          "question_id": "late-oncall",
+          "status": "disputed",
+          "value": null,
+          "evidence_ids": [
+            "assert-oncall-priya",
+            "assert-oncall-jordan"
+          ],
+          "correct": true,
+          "stale": false,
+          "evidence_covered": true,
+          "estimated_tokens": 24
+        }
+      ]
+    }
+  ],
+  "hardware": "macOS-26.6.2-x86_64-i386-64bit",
+  "ablation": {
+    "intact": {
+      "status": "supported",
+      "value": "region-b",
+      "evidence_ids": [
+        "assert-region-b"
+      ],
+      "included": [
+        {
+          "assertion_id": "assert-region-a",
+          "status": "superseded",
+          "value": "region-a"
+        },
+        {
+          "assertion_id": "assert-region-b",
+          "status": "current",
+          "value": "region-b"
+        }
+      ]
+    },
+    "support_deleted": {
+      "status": "supported",
+      "value": "region-a",
+      "evidence_ids": [
+        "assert-region-a"
+      ],
+      "included": [
+        {
+          "assertion_id": "assert-region-a",
+          "status": "current",
+          "value": "region-a"
+        }
+      ]
+    },
+    "supersedes_deleted": {
+      "status": "insufficient",
+      "value": null,
+      "evidence_ids": [],
+      "included": [
+        {
+          "assertion_id": "assert-region-a",
+          "status": "current",
+          "value": "region-a"
+        },
+        {
+          "assertion_id": "assert-region-b",
+          "status": "current",
+          "value": "region-b"
+        }
+      ]
+    },
+    "restored": true
+  }
+}

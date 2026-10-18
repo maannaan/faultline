@@ -1,0 +1,26 @@
+.env
+.env.local
+**/.env.local
+!.env.example
+!**/.env.example
+
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+node_modules/
+.next/
+dist/
+out/
+
+.DS_Store
+*.log
+.uv
+
+# private planning material
+faultline-track-02-complete-detailed-spec*.html
