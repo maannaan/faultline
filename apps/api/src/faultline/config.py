@@ -8,7 +8,10 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
+_PARENTS = Path(__file__).resolve().parents
+# In the repo this is the checkout root. In the API container the tree is shallower,
+# there is no repo .env, and settings come from the environment.
+REPO_ROOT = _PARENTS[4] if len(_PARENTS) > 4 else _PARENTS[-1]
 
 
 class Settings(BaseSettings):
