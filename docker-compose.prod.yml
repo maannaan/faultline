@@ -1,0 +1,70 @@
+# Production stack: api + web behind Caddy (automatic HTTPS).
+# The graph is FalkorDB Cloud by default. Set FALKORDB_HOST/PORT/USERNAME/PASSWORD/SSL in .env.
+# To run the graph on the same host instead, start with: --profile local-graph
+services:
+  falkordb:
+    profiles: ["local-graph"]
+    image: falkordb/falkordb@sha256:107455e862a824e45e8e9f5a7fbfdf5e00a08b14e13eae2577c72fd9e3f59ba6
+    environment:
+      REDIS_ARGS: "--requirepass ${FALKORDB_PASSWORD} --appendonly yes"
+      REDISCLI_AUTH: "${FALKORDB_PASSWORD}"
+    volumes:
+      - graph_data:/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      FALKORDB_HOST: ${FALKORDB_HOST}
+      FALKORDB_PORT: ${FALKORDB_PORT:-6379}
+      FALKORDB_USERNAME: ${FALKORDB_USERNAME:-}
+      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD}
+      FALKORDB_SSL: ${FALKORDB_SSL:-false}
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      AUTH_KEYS: ${AUTH_KEYS}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.groq.com/openai/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-openai/gpt-oss-20b}
+      POLICY_VERSION: ${POLICY_VERSION:-memory-policy-v1}
+      SCHEMA_VERSION: ${SCHEMA_VERSION:-1}
+      MAX_NOTE_CHARS: ${MAX_NOTE_CHARS:-8000}
+      WEB_ORIGIN: https://${SITE_HOST}
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      FAULTLINE_API_KEY: ${FAULTLINE_API_KEY}
+    expose:
+      - "3010"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.8.4
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_HOST: ${SITE_HOST}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  graph_data:
+  caddy_data:
+  caddy_config:

@@ -28,6 +28,10 @@ class GraphStore:
             }
             if self.settings.falkordb_password:
                 kwargs["password"] = self.settings.falkordb_password
+            if self.settings.falkordb_username:
+                kwargs["username"] = self.settings.falkordb_username
+            if self.settings.falkordb_ssl:
+                kwargs["ssl"] = True
             self._db = FalkorDB(**kwargs)
         return self._db
 

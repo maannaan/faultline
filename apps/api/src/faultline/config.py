@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     falkordb_host: str = "127.0.0.1"
     falkordb_port: int = 6379
     falkordb_password: str = ""
+    falkordb_username: str = ""
+    falkordb_ssl: bool = False
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     app_env: str = "development"

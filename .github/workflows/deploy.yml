@@ -1,0 +1,88 @@
+name: ci-deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    services:
+      falkordb:
+        image: falkordb/falkordb@sha256:107455e862a824e45e8e9f5a7fbfdf5e00a08b14e13eae2577c72fd9e3f59ba6
+        env:
+          REDIS_ARGS: "--requirepass faultline-dev-password"
+        ports:
+          - 6379:6379
+    env:
+      FALKORDB_HOST: 127.0.0.1
+      FALKORDB_PORT: "6379"
+      FALKORDB_PASSWORD: faultline-dev-password
+      APP_ENV: development
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv python install 3.12
+      - run: uv sync --frozen
+      - name: Lint
+        run: uv run ruff check src tests
+      - name: Wait for FalkorDB
+        run: |
+          for i in $(seq 1 30); do
+            uv run python -c "from falkordb import FalkorDB; FalkorDB(host='127.0.0.1', port=6379, password='faultline-dev-password').connection.ping()" && exit 0
+            sleep 2
+          done
+          exit 1
+      - name: Tests
+        run: uv run pytest -q
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [api, web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 20m
+          script: |
+            set -e
+            cd ~/faultline
+            git fetch --quiet origin main
+            git reset --hard origin/main
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            docker image prune -f
+      - name: Smoke check
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS "https://${{ secrets.SITE_HOST }}/api/faultline/health" && exit 0
+            sleep 5
+          done
+          exit 1
