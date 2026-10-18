@@ -2,7 +2,7 @@
 
 [![ci-deploy](https://github.com/maannaan/faultline/actions/workflows/deploy.yml/badge.svg)](https://github.com/maannaan/faultline/actions/workflows/deploy.yml)
 
-**Live demo: https://faultline.mannnan.com** · Demo video: _link added after recording_ · [Graph Hacks](https://www.wemakedevs.org/hackathons/falkordb) **Track 02: Agent Memory and Coordination** · Built on [FalkorDB](https://www.falkordb.com)
+**Live demo: https://faultline.mannnan.com** · **Demo video: https://youtu.be/7pAOF6mY3M4** · [Graph Hacks](https://www.wemakedevs.org/hackathons/falkordb) **Track 02: Agent Memory and Coordination** · Built on [FalkorDB](https://www.falkordb.com)
 
 > Your AI agent said `region-a` yesterday and `region-b` today. Was that a fix or a bug? Which note changed its mind? Who else already acted on the old answer?
 > Faultline answers those questions the way `git` answers them for code.

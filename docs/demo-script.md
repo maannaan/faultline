@@ -90,7 +90,7 @@ Optionally cut for 3 seconds to the GitHub Actions tab showing green `api`, `web
 
 ## Submission checklist
 
-- [ ] Video uploaded (YouTube, unlisted is fine). Link pasted into the README's top line and the submission form
+- [x] Video uploaded: https://youtu.be/7pAOF6mY3M4. Link pasted into the README's top line and the submission form
 - [ ] Repo is public: https://github.com/maannaan/faultline
 - [ ] Live URL: https://faultline.mannnan.com
 - [ ] Track: **02, Agent Memory and Coordination**
