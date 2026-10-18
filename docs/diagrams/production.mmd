@@ -1,0 +1,10 @@
+flowchart LR
+    Dev["git push to main"] --> GH["GitHub Actions"]
+    GH -->|"OIDC: short-lived AWS role,<br/>no stored secrets"| SSM["AWS SSM Run Command"]
+    SSM --> EC2
+    subgraph EC2["AWS EC2 (t3.small, Elastic IP)"]
+        C["Caddy<br/>automatic HTTPS<br/>ports 80/443 only"] --> WEB["web :3010"]
+        WEB --> APIP["api :8000"]
+        APIP --> FDB[("FalkorDB :6379<br/>AOF persistence")]
+    end
+    User["Visitor"] -->|"https://faultline.mannnan.com"| C

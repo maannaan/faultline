@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant You
+    participant API as Faultline API
+    participant DB as FalkorDB
+    You->>API: POST /v1/replays (question, as_of = 15 Oct)
+    API->>DB: as-of query: assertions observed by 15 Oct + their edges
+    API->>API: policy picks status at that moment
+    API->>DB: save Snapshot + ReplayRun + AnswerClaim
+    API-->>You: "region-a", cites assert-region-a
+    You->>API: GET /v1/replays/{id}/diff (vs the 16 Oct replay)
+    API-->>You: + assert-region-b, region-a current → superseded,<br/>because of the SUPERSEDES edge

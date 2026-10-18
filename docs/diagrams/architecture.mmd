@@ -1,0 +1,7 @@
+flowchart LR
+    U["You, in a browser"] --> W["Web app<br/>Next.js 15 + React 19<br/>landing page and /app"]
+    A["Your agent or script"] -->|"HTTPS + Bearer key"| API
+    W -->|"/api/faultline proxy<br/>(API key kept server-side)"| API["Faultline API<br/>FastAPI + Pydantic"]
+    API --> P["Memory policy<br/>memory-policy-v1<br/>(deterministic)"]
+    API -->|"parameterised Cypher"| G[("FalkorDB<br/>one graph per tenant")]
+    API -.->|"optional"| L["LLM (any OpenAI-compatible,<br/>e.g. Groq) for extraction<br/>and phrasing only"]

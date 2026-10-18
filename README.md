@@ -101,15 +101,8 @@ Nothing on the live site needs an LLM. Every answer comes from the graph and a f
 
 ## 6. Architecture
 
-```mermaid
-flowchart LR
-    U["You, in a browser"] --> W["Web app<br/>Next.js 15 + React 19<br/>landing page and /app"]
-    A["Your agent or script"] -->|"HTTPS + Bearer key"| API
-    W -->|"/api/faultline proxy<br/>(API key kept server-side)"| API["Faultline API<br/>FastAPI + Pydantic"]
-    API --> P["Memory policy<br/>memory-policy-v1<br/>(deterministic)"]
-    API -->|"parameterised Cypher"| G[("FalkorDB<br/>one graph per tenant")]
-    API -.->|"optional"| L["LLM (any OpenAI-compatible,<br/>e.g. Groq) for extraction<br/>and phrasing only"]
-```
+![Architecture: browser and agents talk to the Faultline API, which uses the policy and FalkorDB](docs/diagrams/architecture.png)
+<sub>Diagram source: [`docs/diagrams/architecture.mmd`](docs/diagrams/architecture.mmd)</sub>
 
 | Part | Folder | Built with | Job |
 | --- | --- | --- | --- |
@@ -121,18 +114,8 @@ flowchart LR
 
 ### Production setup
 
-```mermaid
-flowchart LR
-    Dev["git push to main"] --> GH["GitHub Actions"]
-    GH -->|"OIDC: short-lived AWS role,<br/>no stored secrets"| SSM["AWS SSM Run Command"]
-    SSM --> EC2
-    subgraph EC2["AWS EC2 (t3.small, Elastic IP)"]
-        C["Caddy<br/>automatic HTTPS<br/>ports 80/443 only"] --> WEB["web :3010"]
-        WEB --> APIP["api :8000"]
-        APIP --> FDB[("FalkorDB :6379<br/>AOF persistence")]
-    end
-    User["Visitor"] -->|"https://faultline.mannnan.com"| C
-```
+![Production: GitHub Actions deploys over OIDC and SSM to one EC2 host running Caddy, web, API and FalkorDB](docs/diagrams/production.png)
+<sub>Diagram source: [`docs/diagrams/production.mmd`](docs/diagrams/production.mmd)</sub>
 
 Only ports 80 and 443 are open to the internet. The API and FalkorDB are reachable only inside the Docker network.
 
@@ -140,114 +123,39 @@ Only ports 80 and 443 are open to the internet. The API and FalkorDB are reachab
 
 ### Writing a fact
 
-```mermaid
-sequenceDiagram
-    participant Agent
-    participant API as Faultline API
-    participant Policy as memory-policy-v1
-    participant DB as FalkorDB
-    Agent->>API: POST /v1/notes (text, trust tier, observed_at, session, agent)
-    API->>API: extract entity, predicate, value<br/>(scripted, or LLM if configured)
-    API->>DB: MERGE MemoryEvent, Source, Assertion
-    API->>Policy: compare with existing assertions
-    Policy-->>API: current / superseded / disputed / unverified
-    API->>DB: add SUPERSEDES or CONFLICTS_WITH edge if needed
-    API-->>Agent: assertion ids + statuses
-```
+![Writing a fact: extract, store, apply the policy, add edges](docs/diagrams/write-flow.png)
+<sub>Diagram source: [`docs/diagrams/write-flow.mmd`](docs/diagrams/write-flow.mmd)</sub>
 
 The structured write routes (`/v1/events`, `/v1/sources`, `/v1/assertions`) take an `idempotency_key`, so retries are safe.
 
 ### Asking a question at a point in time (replay and diff)
 
-```mermaid
-sequenceDiagram
-    participant You
-    participant API as Faultline API
-    participant DB as FalkorDB
-    You->>API: POST /v1/replays (question, as_of = 15 Oct)
-    API->>DB: as-of query: assertions observed by 15 Oct + their edges
-    API->>API: policy picks status at that moment
-    API->>DB: save Snapshot + ReplayRun + AnswerClaim
-    API-->>You: "region-a", cites assert-region-a
-    You->>API: GET /v1/replays/{id}/diff (vs the 16 Oct replay)
-    API-->>You: + assert-region-b, region-a current → superseded,<br/>because of the SUPERSEDES edge
-```
+![Replay and diff: as-of query, snapshot, answer, evidence diff](docs/diagrams/replay-flow.png)
+<sub>Diagram source: [`docs/diagrams/replay-flow.mmd`](docs/diagrams/replay-flow.mmd)</sub>
 
 ### Bisect: finding the event that flipped an answer
 
-```mermaid
-flowchart TD
-    S["Good at 15 Oct, bad at 16 Oct"] --> L["List every distinct observed_at<br/>between the two"]
-    L --> M["Pick the middle moment"]
-    M --> Q["Run the as-of query there"]
-    Q --> D{"Same answer as 'bad'?"}
-    D -->|yes| B["Search the earlier half"]
-    D -->|no| A["Search the later half"]
-    B --> E{"One moment left?"}
-    A --> E
-    E -->|no| M
-    E -->|yes| R["First bad moment + the event<br/>and source recorded then"]
-```
+![Bisect: binary search over observed moments](docs/diagrams/bisect-flow.png)
+<sub>Diagram source: [`docs/diagrams/bisect-flow.mmd`](docs/diagrams/bisect-flow.mmd)</sub>
 
 Bisect only reads. It never writes to the graph.
 
 ### Handoff between agents
 
-```mermaid
-sequenceDiagram
-    participant Planner as agent-planner
-    participant API as Faultline API
-    participant Release as agent-release
-    Planner->>API: create task + handoff (uses snapshot S)
-    API->>API: copy every disputed assertion in S<br/>onto the handoff (INCLUDES_CONFLICT)
-    Release->>API: accept (expected_version)
-    API-->>Release: task + "on-call is disputed: Priya vs Jordan"
-    Release->>API: complete
-    alt snapshot expired or newer facts arrived
-        API-->>Release: 409 snapshot_stale (revalidate first)
-    else still fresh
-        API-->>Release: completed
-    end
-```
+![Handoff: conflicts are copied onto the handoff, and a stale snapshot returns 409](docs/diagrams/handoff-flow.png)
+<sub>Diagram source: [`docs/diagrams/handoff-flow.mmd`](docs/diagrams/handoff-flow.mmd)</sub>
 
 The client can't remove the copied conflicts, so the next agent can't act as if a dispute were settled.
 
 ### CI/CD on every push
 
-```mermaid
-flowchart LR
-    P["push to main"] --> T1["api job<br/>ruff + 66 pytest tests<br/>against a real FalkorDB"]
-    T1 --> T2["memory regression tests<br/>memory-tests.yaml"]
-    P --> T3["web job<br/>tsc + next build"]
-    T2 --> D["deploy job<br/>OIDC → SSM → deploy.sh"]
-    T3 --> D
-    D --> S["smoke check<br/>HTTPS landing page + graph ready"]
-```
+![CI/CD: tests, memory tests and build, then deploy and smoke check](docs/diagrams/cicd.png)
+<sub>Diagram source: [`docs/diagrams/cicd.mmd`](docs/diagrams/cicd.mmd)</sub>
 
 ## 8. Graph model
 
-```mermaid
-flowchart LR
-    Tenant -->|HAS_AGENT| Agent
-    Tenant -->|HAS_USER| User
-    User -->|STARTED_SESSION| Session
-    Agent -->|RECORDED| MemoryEvent
-    Session -->|CONTAINS_EVENT| MemoryEvent
-    MemoryEvent -->|CREATED_ASSERTION| Assertion
-    MemoryEvent -->|OBSERVED_SOURCE| Source
-    Assertion -->|ABOUT| Entity
-    Assertion -->|SUPPORTED_BY| Source
-    Assertion -->|SUPERSEDES| Assertion
-    Assertion <-->|CONFLICTS_WITH| Assertion
-    Snapshot -->|"INCLUDES_ASSERTION<br/>(status_at_snapshot)"| Assertion
-    ReplayRun -->|USED_SNAPSHOT| Snapshot
-    ReplayRun -->|PRODUCED_ANSWER| AnswerClaim
-    AnswerClaim -->|SUPPORTED_BY_ASSERTION| Assertion
-    Task -->|HAS_HANDOFF| Handoff
-    Handoff -->|USED_SNAPSHOT| Snapshot
-    Handoff -->|INCLUDES_CONFLICT| Assertion
-    Handoff -->|ASSIGNED_TO| Agent
-```
+![Graph model: nodes and relationships](docs/diagrams/graph-model.png)
+<sub>Diagram source: [`docs/diagrams/graph-model.mmd`](docs/diagrams/graph-model.mmd)</sub>
 
 Also: `(Agent)-[:OWNS_TASK]->(Task)`, `(MemoryEvent)-[:MENTIONS_ENTITY]->(Entity)`, and `(Handoff)-[:REFERENCES_MEMORY]->(Assertion|Source)`.
 

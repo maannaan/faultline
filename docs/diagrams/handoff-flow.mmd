@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant Planner as agent-planner
+    participant API as Faultline API
+    participant Release as agent-release
+    Planner->>API: create task + handoff (uses snapshot S)
+    API->>API: copy every disputed assertion in S<br/>onto the handoff (INCLUDES_CONFLICT)
+    Release->>API: accept (expected_version)
+    API-->>Release: task + "on-call is disputed: Priya vs Jordan"
+    Release->>API: complete
+    alt snapshot expired or newer facts arrived
+        API-->>Release: 409 snapshot_stale (revalidate first)
+    else still fresh
+        API-->>Release: completed
+    end

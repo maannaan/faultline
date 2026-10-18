@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant Agent
+    participant API as Faultline API
+    participant Policy as memory-policy-v1
+    participant DB as FalkorDB
+    Agent->>API: POST /v1/notes (text, trust tier, observed_at, session, agent)
+    API->>API: extract entity, predicate, value<br/>(scripted, or LLM if configured)
+    API->>DB: MERGE MemoryEvent, Source, Assertion
+    API->>Policy: compare with existing assertions
+    Policy-->>API: current / superseded / disputed / unverified
+    API->>DB: add SUPERSEDES or CONFLICTS_WITH edge if needed
+    API-->>Agent: assertion ids + statuses

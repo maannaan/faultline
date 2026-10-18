@@ -1,0 +1,11 @@
+flowchart TD
+    S["Good at 15 Oct, bad at 16 Oct"] --> L["List every distinct observed_at<br/>between the two"]
+    L --> M["Pick the middle moment"]
+    M --> Q["Run the as-of query there"]
+    Q --> D{"Same answer as 'bad'?"}
+    D -->|yes| B["Search the earlier half"]
+    D -->|no| A["Search the later half"]
+    B --> E{"One moment left?"}
+    A --> E
+    E -->|no| M
+    E -->|yes| R["First bad moment + the event<br/>and source recorded then"]
