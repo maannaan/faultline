@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request, Response
@@ -9,6 +10,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 from faultline.auth import require_tenant
 from faultline.bench.ablation import run_ablation
 from faultline.coordination.handoff import CoordinationService
+from faultline.graph.subgraph import build_graph_view
 from faultline.memory.ingest import ingest_note
 from faultline.memory.service import MemoryService
 from faultline.replay.service import LabService
@@ -22,6 +24,7 @@ from faultline.schemas.models import (
     EventCreate,
     EventResult,
     EvidencePath,
+    GraphView,
     HandoffCreate,
     HealthResponse,
     NoteCreate,
@@ -233,6 +236,26 @@ def get_timeline(
     limit: Annotated[int, Query(ge=1, le=200)] = 100,
 ) -> TimelineResponse:
     return service.get_timeline(tenant_id, entity_id, limit)
+
+
+@router.get("/v1/graph", response_model=GraphView)
+def get_graph(
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+    entity_id: Annotated[str, Query(min_length=1)],
+    as_of: datetime | None = None,
+    time_mode: str = "known",
+    exclude_source_ids: Annotated[str, Query(max_length=1000)] = "",
+) -> GraphView:
+    graph = request.app.state.store.graph_for_tenant(tenant_id)
+    excluded = [item.strip() for item in exclude_source_ids.split(",") if item.strip()]
+    return build_graph_view(
+        graph,
+        entity_id=entity_id,
+        as_of=as_of,
+        time_mode=time_mode,
+        exclude_source_ids=excluded,
+    )
 
 
 @router.post("/v1/notes", response_model=NoteIngestResult, status_code=201)

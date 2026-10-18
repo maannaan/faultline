@@ -156,3 +156,46 @@ export type TaskView = {
   acceptance_criteria: string[];
   handoff: HandoffView | null;
 };
+
+export type GraphNodeKind = "entity" | "assertion" | "source" | "event" | "session" | "agent";
+
+export type GraphNode = {
+  id: string;
+  kind: GraphNodeKind;
+  label: string;
+  sublabel: string;
+  status: string | null;
+  status_now: string | null;
+  observed_at: string | null;
+  excluded: boolean;
+  visible: boolean;
+};
+
+export type GraphEdge = {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+  visible: boolean;
+};
+
+export type GraphView = {
+  entity_id: string;
+  as_of: string;
+  time_mode: string;
+  moments: string[];
+  validity_unknown_ids: string[];
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+};
+
+export type EvidencePath = {
+  assertion_id: string;
+  source_id: string | null;
+  event_id: string | null;
+  session_id: string | null;
+  entity_id: string;
+  status: string;
+  supersedes_ids: string[];
+  conflicts_with_ids: string[];
+};

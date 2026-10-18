@@ -1,39 +1,18 @@
 import type { Metadata } from "next";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Faultline",
-  description: "Memory timeline for agent assertions, sources, and conflicts.",
+  title: "Faultline — git for agent memory",
+  description:
+    "Blame, diff, bisect and test what your AI agents remembered. Temporal, source-backed agent memory on FalkorDB.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
-        <nav className="mx-auto flex max-w-6xl gap-4 px-4 pt-4 text-sm lg:px-6">
-          <a href="/" className="font-medium">
-            Timeline
-          </a>
-          <a href="/replay" className="font-medium">
-            Replay Lab
-          </a>
-          <a href="/handoff" className="font-medium">
-            Handoff
-          </a>
-          <a href="/bench" className="font-medium">
-            Bench
-          </a>
-        </nav>
-        {children}
-      </body>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className="min-h-screen bg-bg text-ink">{children}</body>
     </html>
   );
 }

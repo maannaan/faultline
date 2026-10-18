@@ -391,3 +391,33 @@ class AblationReport(BaseModel):
     support_deleted: BenchClaim
     supersedes_deleted: BenchClaim
     restored: bool
+
+
+class GraphNode(BaseModel):
+    id: str
+    kind: Literal["entity", "assertion", "source", "event", "session", "agent"]
+    label: str
+    sublabel: str = ""
+    status: str | None = None
+    status_now: str | None = None
+    observed_at: str | None = None
+    excluded: bool = False
+    visible: bool
+
+
+class GraphEdge(BaseModel):
+    id: str
+    source: str
+    target: str
+    type: str
+    visible: bool
+
+
+class GraphView(BaseModel):
+    entity_id: str
+    as_of: str
+    time_mode: str
+    moments: list[str]
+    validity_unknown_ids: list[str]
+    nodes: list[GraphNode]
+    edges: list[GraphEdge]
