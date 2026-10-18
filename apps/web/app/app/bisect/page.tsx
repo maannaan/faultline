@@ -1,11 +1,15 @@
-import { ComingSoon } from "@/components/coming-soon";
+import { ApiRequestError, serverGet } from "@/lib/api";
+import type { Entity } from "@/lib/types";
+import { BisectView } from "./bisect-view";
 
-export default function BisectPage() {
-  return (
-    <ComingSoon
-      eyebrow="faultline bisect"
-      title="Memory bisect"
-      description="Right at one time, wrong at another. Binary-search the recorded memory between them to find the event that flipped the answer."
-    />
-  );
+export const dynamic = "force-dynamic";
+
+export default async function BisectPage() {
+  try {
+    const entityList = await serverGet<{ entities: Entity[] }>("/v1/entities");
+    return <BisectView entities={entityList.entities} apiError={null} />;
+  } catch (error) {
+    const message = error instanceof ApiRequestError ? error.message : "The Faultline API is not reachable.";
+    return <BisectView entities={[]} apiError={message} />;
+  }
 }

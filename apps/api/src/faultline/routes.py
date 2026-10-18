@@ -13,12 +13,15 @@ from faultline.coordination.handoff import CoordinationService
 from faultline.graph.subgraph import build_graph_view
 from faultline.memory.ingest import ingest_note
 from faultline.memory.service import MemoryService
+from faultline.replay.bisect import run_bisect
 from faultline.replay.service import LabService
 from faultline.schemas.models import (
     AblationReport,
     AcceptCreate,
     AssertionCreate,
     AssertionResult,
+    BisectCreate,
+    BisectResult,
     CompleteCreate,
     EntityList,
     EventCreate,
@@ -255,6 +258,23 @@ def get_graph(
         as_of=as_of,
         time_mode=time_mode,
         exclude_source_ids=excluded,
+    )
+
+
+@router.post("/v1/bisect", response_model=BisectResult)
+def post_bisect(
+    body: BisectCreate,
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+) -> BisectResult:
+    graph = request.app.state.store.graph_for_tenant(tenant_id)
+    return run_bisect(
+        graph,
+        entity_id=body.entity_id,
+        predicate=body.predicate,
+        good_as_of=body.good_as_of,
+        bad_as_of=body.bad_as_of,
+        time_mode=body.time_mode,
     )
 
 

@@ -199,3 +199,26 @@ export type EvidencePath = {
   supersedes_ids: string[];
   conflicts_with_ids: string[];
 };
+
+export type BisectProbe = {
+  as_of: string;
+  status: string;
+  value: string | null;
+  evidence_ids: string[];
+  verdict: "good" | "bad";
+};
+
+export type BisectResult = {
+  entity_id: string;
+  predicate: string;
+  good: BisectProbe;
+  bad: BisectProbe;
+  flipped: boolean;
+  candidates: number;
+  probes: BisectProbe[];
+  first_bad_as_of: string | null;
+  culprit_assertion_ids: string[];
+  culprit_source_ids: string[];
+  culprit_event_ids: string[];
+  explanation: string;
+};

@@ -421,3 +421,39 @@ class GraphView(BaseModel):
     validity_unknown_ids: list[str]
     nodes: list[GraphNode]
     edges: list[GraphEdge]
+
+
+class BisectCreate(APIModel):
+    entity_id: str = Field(min_length=1, max_length=200)
+    predicate: str = Field(min_length=1, max_length=100)
+    good_as_of: datetime
+    bad_as_of: datetime
+    time_mode: Literal["known", "valid"] = "known"
+
+    @field_validator("good_as_of", "bad_as_of")
+    @classmethod
+    def _aware(cls, value: datetime) -> datetime:
+        return ensure_aware(value)
+
+
+class BisectProbe(BaseModel):
+    as_of: str
+    status: str
+    value: str | None = None
+    evidence_ids: list[str]
+    verdict: Literal["good", "bad"]
+
+
+class BisectResult(BaseModel):
+    entity_id: str
+    predicate: str
+    good: BisectProbe
+    bad: BisectProbe
+    flipped: bool
+    candidates: int
+    probes: list[BisectProbe]
+    first_bad_as_of: str | None = None
+    culprit_assertion_ids: list[str]
+    culprit_source_ids: list[str]
+    culprit_event_ids: list[str]
+    explanation: str
