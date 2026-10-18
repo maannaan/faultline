@@ -1,22 +1,16 @@
 "use client";
 
-import { CircleCheck, CircleX, FlaskConical, ListChecks, RotateCcw, Scissors } from "lucide-react";
+import { CircleCheck, CircleX, ListChecks, RotateCcw, Scissors } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { EmptyState, ErrorBanner, PageHeader, StatusPill } from "@/components/ui";
 import type { AblationReport, BenchClaim, MemoryTestReport } from "@/lib/types";
 import { GITHUB_URL } from "@/components/app-nav";
+import { BenchmarkResultsPanels } from "./benchmark-results";
 
 type Props = {
   apiError: string | null;
 };
-
-/* From docs/benchmark.json (make bench): three synthetic questions on the seeded graph. */
-const BASELINE = [
-  { method: "No memory", correct: 0, stale: 0, conflicts: 0 },
-  { method: "Flat summary · latest line wins", correct: 1, stale: 1, conflicts: 0 },
-  { method: "Faultline", correct: 3, stale: 0, conflicts: 1 },
-] as const;
 
 export function BenchView({ apiError }: Props) {
   const [pending, setPending] = useState(false);
@@ -84,49 +78,7 @@ export function BenchView({ apiError }: Props) {
 
       {apiError ? null : <MemoryTests />}
 
-      <section>
-        <div className="mb-4 flex items-center gap-2">
-          <FlaskConical className="size-4 text-fault" />
-          <h2 className="text-sm font-medium">Baseline comparison</h2>
-          <span className="text-xs text-dim">3 synthetic questions · deterministic answerer</span>
-        </div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {BASELINE.map((row) => {
-            const hero = row.method === "Faultline";
-            return (
-              <div key={row.method} className={`panel panel-pad ${hero ? "border-fault/40 bg-fault/[0.04]" : ""}`}>
-                <p className="text-sm text-muted">{row.method}</p>
-                <p className="mt-3 text-4xl font-semibold tracking-tight">
-                  {row.correct}
-                  <span className="text-xl text-dim">/3</span>
-                </p>
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                  <motion.div
-                    className={`h-full ${hero ? "bg-fault" : "bg-white/30"}`}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${(row.correct / 3) * 100}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                  />
-                </div>
-                <dl className="mono mt-4 flex gap-6 text-[11px]">
-                  <div>
-                    <dt className="text-dim">stale answers</dt>
-                    <dd className={row.stale ? "text-disputed" : "text-ink"}>{row.stale}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-dim">conflicts surfaced</dt>
-                    <dd className="text-ink">{row.conflicts}/1</dd>
-                  </div>
-                </dl>
-              </div>
-            );
-          })}
-        </div>
-        <p className="mt-3 text-xs text-dim">
-          Small synthetic sample. It shows the mechanism, not a general advantage over other memory systems.
-        </p>
-      </section>
+      {apiError ? null : <BenchmarkResultsPanels />}
     </div>
   );
 }

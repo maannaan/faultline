@@ -1,0 +1,2032 @@
+{
+  "meta": {
+    "generated_at": "2026-10-18T18:42:38Z",
+    "seed": 42,
+    "machine": "macOS-26.6.2-x86_64-i386-64bit",
+    "python": "3.12.13",
+    "commit": "db18ca2",
+    "llm_calls": 100
+  },
+  "model": "openai/gpt-oss-20b",
+  "base_url": "https://api.groq.com/openai/v1",
+  "prompt_version": "llm-eval-v1",
+  "temperature": 0,
+  "sample": 50,
+  "system_prompt": "You answer questions about what an AI agent's memory said at a given time.\nUse only the memory provided. Rules:\n- Only notes from reviewed sources count. Ignore unreviewed notes.\n- A note that says it corrects an earlier note replaces that earlier note.\n- If reviewed notes give different values and none corrects the other, the answer is DISPUTED.\n- If nothing usable is known at that time, the answer is UNKNOWN.\nReply with JSON only: {\"answer\": \"<value>\" or \"DISPUTED\" or \"UNKNOWN\", \"evidence_ids\": [\"...\"]}",
+  "conditions": {
+    "raw_notes": {
+      "correct": 46,
+      "questions": 50,
+      "accuracy": 0.92,
+      "errors": {
+        "missed_conflict": 4
+      },
+      "by_scenario": {
+        "stable": {
+          "correct": 10,
+          "questions": 10
+        },
+        "correction": {
+          "correct": 10,
+          "questions": 10
+        },
+        "chain": {
+          "correct": 10,
+          "questions": 10
+        },
+        "conflict": {
+          "correct": 6,
+          "questions": 10
+        },
+        "unreviewed_noise": {
+          "correct": 10,
+          "questions": 10
+        }
+      },
+      "latency_ms_p50": 946.1,
+      "tokens_total": 22609,
+      "rows": [
+        {
+          "question_id": "svc-0052-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-09T04:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 699.1,
+          "tokens": 311,
+          "prompt": "Memory as of 2026-11-09T04:00:00Z:\n(no notes)\n\nQuestion: As of 2026-11-09T04:00:00Z, what is the deploy_region of Service 0052?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[]}"
+        },
+        {
+          "question_id": "svc-0003-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-05T02:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 449.5,
+          "tokens": 312,
+          "prompt": "Memory as of 2026-11-05T02:00:00Z:\n(no notes)\n\nQuestion: As of 2026-11-05T02:00:00Z, what is the oncall_owner of Service 0003?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[]}"
+        },
+        {
+          "question_id": "svc-0118-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-05T21:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 584.8,
+          "tokens": 312,
+          "prompt": "Memory as of 2026-11-05T21:00:00Z:\n(no notes)\n\nQuestion: As of 2026-11-05T21:00:00Z, what is the oncall_owner of Service 0118?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[]}"
+        },
+        {
+          "question_id": "svc-0102-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-09T22:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 551.5,
+          "tokens": 321
+        },
+        {
+          "question_id": "svc-0092-region-q1",
+          "scenario": "stable",
+          "as_of": "2026-11-05T05:00:00Z",
+          "expected": [
+            "supported",
+            "region-h"
+          ],
+          "answer": [
+            "supported",
+            "region-h"
+          ],
+          "cited": [
+            "svc-0092-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 607.2,
+          "tokens": 496
+        },
+        {
+          "question_id": "svc-0058-oncall-q1",
+          "scenario": "stable",
+          "as_of": "2026-11-08T10:00:00Z",
+          "expected": [
+            "supported",
+            "Sofia"
+          ],
+          "answer": [
+            "supported",
+            "Sofia"
+          ],
+          "cited": [
+            "svc-0058-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 647.8,
+          "tokens": 466
+        },
+        {
+          "question_id": "svc-0049-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-06T01:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1078.8,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0044-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-08T02:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 4717.5,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0164-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-06T16:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 622.1,
+          "tokens": 312
+        },
+        {
+          "question_id": "svc-0007-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-10T13:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2286.5,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0004-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-11T07:30:00Z",
+          "expected": [
+            "supported",
+            "Sofia"
+          ],
+          "answer": [
+            "supported",
+            "Sofia"
+          ],
+          "cited": [
+            "svc-0004-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2621.4,
+          "tokens": 480
+        },
+        {
+          "question_id": "svc-0010-region-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-06T17:00:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0010-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1434.4,
+          "tokens": 552
+        },
+        {
+          "question_id": "svc-0043-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-04T22:30:00Z",
+          "expected": [
+            "supported",
+            "Mei"
+          ],
+          "answer": [
+            "supported",
+            "Mei"
+          ],
+          "cited": [
+            "svc-0043-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1465.1,
+          "tokens": 476
+        },
+        {
+          "question_id": "svc-0049-oncall-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-06T08:00:00Z",
+          "expected": [
+            "supported",
+            "Arjun"
+          ],
+          "answer": [
+            "supported",
+            "Arjun"
+          ],
+          "cited": [
+            "svc-0049-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 5210.0,
+          "tokens": 559
+        },
+        {
+          "question_id": "svc-0103-region-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-11T09:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1280.8,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0148-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-02T16:00:00Z",
+          "expected": [
+            "supported",
+            "Omar"
+          ],
+          "answer": [
+            "supported",
+            "Omar"
+          ],
+          "cited": [
+            "svc-0148-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1111.8,
+          "tokens": 522
+        },
+        {
+          "question_id": "svc-0004-oncall-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-11T04:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 834.9,
+          "tokens": 322
+        },
+        {
+          "question_id": "svc-0130-oncall-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-05T02:00:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0130-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 713.0,
+          "tokens": 556
+        },
+        {
+          "question_id": "svc-0041-region-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-11T00:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0041-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2645.3,
+          "tokens": 488
+        },
+        {
+          "question_id": "svc-0170-region-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-05T09:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 5115.4,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0182-region-q3",
+          "scenario": "chain",
+          "as_of": "2026-11-05T18:00:00Z",
+          "expected": [
+            "supported",
+            "region-b"
+          ],
+          "answer": [
+            "supported",
+            "region-b"
+          ],
+          "cited": [
+            "svc-0182-region-2"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 689.0,
+          "tokens": 594
+        },
+        {
+          "question_id": "svc-0153-region-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-07T00:00:00Z",
+          "expected": [
+            "supported",
+            "region-f"
+          ],
+          "answer": [
+            "supported",
+            "region-f"
+          ],
+          "cited": [
+            "svc-0153-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 728.4,
+          "tokens": 454
+        },
+        {
+          "question_id": "svc-0095-oncall-q0",
+          "scenario": "chain",
+          "as_of": "2026-11-09T07:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 894.5,
+          "tokens": 312
+        },
+        {
+          "question_id": "svc-0158-region-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-10T01:30:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0158-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1395.8,
+          "tokens": 508
+        },
+        {
+          "question_id": "svc-0195-oncall-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-09T08:00:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0195-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 595.7,
+          "tokens": 488
+        },
+        {
+          "question_id": "svc-0115-region-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-10T05:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0115-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1014.6,
+          "tokens": 567
+        },
+        {
+          "question_id": "svc-0003-region-q3",
+          "scenario": "chain",
+          "as_of": "2026-11-11T06:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0003-region-2"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 6674.4,
+          "tokens": 610
+        },
+        {
+          "question_id": "svc-0075-region-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-04T07:30:00Z",
+          "expected": [
+            "supported",
+            "region-c"
+          ],
+          "answer": [
+            "supported",
+            "region-c"
+          ],
+          "cited": [
+            "svc-0075-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 876.5,
+          "tokens": 480
+        },
+        {
+          "question_id": "svc-0153-oncall-q0",
+          "scenario": "chain",
+          "as_of": "2026-11-08T15:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 715.3,
+          "tokens": 312
+        },
+        {
+          "question_id": "svc-0128-oncall-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-05T15:00:00Z",
+          "expected": [
+            "supported",
+            "Arjun"
+          ],
+          "answer": [
+            "supported",
+            "Arjun"
+          ],
+          "cited": [
+            "svc-0128-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1269.8,
+          "tokens": 551
+        },
+        {
+          "question_id": "svc-0099-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-09T22:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0099-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 946.1,
+          "tokens": 496
+        },
+        {
+          "question_id": "svc-0061-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-10T22:00:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0061-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1407.5,
+          "tokens": 496
+        },
+        {
+          "question_id": "svc-0073-region-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-07T12:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "supported",
+            "region-f"
+          ],
+          "cited": [
+            "svc-0073-region-1"
+          ],
+          "correct": false,
+          "error": "missed_conflict",
+          "latency_ms": 7923.2,
+          "tokens": 714
+        },
+        {
+          "question_id": "svc-0116-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-03T06:30:00Z",
+          "expected": [
+            "supported",
+            "region-b"
+          ],
+          "answer": [
+            "supported",
+            "region-b"
+          ],
+          "cited": [
+            "svc-0116-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 759.9,
+          "tokens": 535
+        },
+        {
+          "question_id": "svc-0044-oncall-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T00:00:00Z",
+          "expected": [
+            "supported",
+            "Omar"
+          ],
+          "answer": [
+            "supported",
+            "Omar"
+          ],
+          "cited": [
+            "svc-0044-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 703.4,
+          "tokens": 529
+        },
+        {
+          "question_id": "svc-0035-oncall-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T12:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "supported",
+            "Mei"
+          ],
+          "cited": [
+            "svc-0035-oncall-1"
+          ],
+          "correct": false,
+          "error": "missed_conflict",
+          "latency_ms": 1145.0,
+          "tokens": 469
+        },
+        {
+          "question_id": "svc-0128-region-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-11T11:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "supported",
+            "region-c"
+          ],
+          "cited": [
+            "svc-0128-region-1"
+          ],
+          "correct": false,
+          "error": "missed_conflict",
+          "latency_ms": 1112.6,
+          "tokens": 531
+        },
+        {
+          "question_id": "svc-0042-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T15:00:00Z",
+          "expected": [
+            "supported",
+            "region-h"
+          ],
+          "answer": [
+            "supported",
+            "region-h"
+          ],
+          "cited": [
+            "svc-0042-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1078.2,
+          "tokens": 498
+        },
+        {
+          "question_id": "svc-0126-region-q0",
+          "scenario": "conflict",
+          "as_of": "2026-11-07T15:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 6401.3,
+          "tokens": 320
+        },
+        {
+          "question_id": "svc-0117-oncall-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-05T21:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "supported",
+            "Mei"
+          ],
+          "cited": [
+            "svc-0117-oncall-1"
+          ],
+          "correct": false,
+          "error": "missed_conflict",
+          "latency_ms": 1114.5,
+          "tokens": 601
+        },
+        {
+          "question_id": "svc-0094-region-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-03T11:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 895.6,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0013-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-07T06:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0013-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1174.3,
+          "tokens": 512
+        },
+        {
+          "question_id": "svc-0167-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-03T19:30:00Z",
+          "expected": [
+            "supported",
+            "region-f"
+          ],
+          "answer": [
+            "supported",
+            "region-f"
+          ],
+          "cited": [
+            "svc-0167-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 714.2,
+          "tokens": 504
+        },
+        {
+          "question_id": "svc-0196-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-11T23:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0196-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 895.5,
+          "tokens": 495
+        },
+        {
+          "question_id": "svc-0039-region-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T16:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 593.5,
+          "tokens": 314
+        },
+        {
+          "question_id": "svc-0133-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T23:30:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0133-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 4841.8,
+          "tokens": 484
+        },
+        {
+          "question_id": "svc-0023-oncall-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T15:30:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0023-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 817.3,
+          "tokens": 494
+        },
+        {
+          "question_id": "svc-0103-oncall-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-08T17:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 802.9,
+          "tokens": 312
+        },
+        {
+          "question_id": "svc-0130-region-q2",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-06T19:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0130-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 649.2,
+          "tokens": 564
+        },
+        {
+          "question_id": "svc-0059-region-q2",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-07T13:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0059-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 695.1,
+          "tokens": 514
+        }
+      ]
+    },
+    "faultline_evidence": {
+      "correct": 50,
+      "questions": 50,
+      "accuracy": 1.0,
+      "errors": {},
+      "by_scenario": {
+        "stable": {
+          "correct": 10,
+          "questions": 10
+        },
+        "correction": {
+          "correct": 10,
+          "questions": 10
+        },
+        "chain": {
+          "correct": 10,
+          "questions": 10
+        },
+        "conflict": {
+          "correct": 10,
+          "questions": 10
+        },
+        "unreviewed_noise": {
+          "correct": 10,
+          "questions": 10
+        }
+      },
+      "latency_ms_p50": 729.9,
+      "tokens_total": 24949,
+      "rows": [
+        {
+          "question_id": "svc-0052-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-09T04:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 483.7,
+          "tokens": 306,
+          "prompt": "Memory as of 2026-11-09T04:00:00Z:\n(no evidence)\n\nQuestion: As of 2026-11-09T04:00:00Z, what is the deploy_region of Service 0052?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[]}"
+        },
+        {
+          "question_id": "svc-0003-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-05T02:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 438.7,
+          "tokens": 307,
+          "prompt": "Memory as of 2026-11-05T02:00:00Z:\n(no evidence)\n\nQuestion: As of 2026-11-05T02:00:00Z, what is the oncall_owner of Service 0003?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[] }"
+        },
+        {
+          "question_id": "svc-0118-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-05T21:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 6677.2,
+          "tokens": 307,
+          "prompt": "Memory as of 2026-11-05T21:00:00Z:\n(no evidence)\n\nQuestion: As of 2026-11-05T21:00:00Z, what is the oncall_owner of Service 0118?",
+          "reply": "{\"answer\":\"UNKNOWN\",\"evidence_ids\":[] }"
+        },
+        {
+          "question_id": "svc-0102-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-09T22:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 545.9,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0092-region-q1",
+          "scenario": "stable",
+          "as_of": "2026-11-05T05:00:00Z",
+          "expected": [
+            "supported",
+            "region-h"
+          ],
+          "answer": [
+            "supported",
+            "region-h"
+          ],
+          "cited": [
+            "svc-0092-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 702.4,
+          "tokens": 507
+        },
+        {
+          "question_id": "svc-0058-oncall-q1",
+          "scenario": "stable",
+          "as_of": "2026-11-08T10:00:00Z",
+          "expected": [
+            "supported",
+            "Sofia"
+          ],
+          "answer": [
+            "supported",
+            "Sofia"
+          ],
+          "cited": [
+            "svc-0058-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 726.0,
+          "tokens": 502
+        },
+        {
+          "question_id": "svc-0049-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-06T01:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 423.2,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0044-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-08T02:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 547.5,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0164-oncall-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-06T16:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 558.9,
+          "tokens": 307
+        },
+        {
+          "question_id": "svc-0007-region-q0",
+          "scenario": "stable",
+          "as_of": "2026-11-10T13:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 6237.0,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0004-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-11T07:30:00Z",
+          "expected": [
+            "supported",
+            "Sofia"
+          ],
+          "answer": [
+            "supported",
+            "Sofia"
+          ],
+          "cited": [
+            "svc-0004-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 686.8,
+          "tokens": 502
+        },
+        {
+          "question_id": "svc-0010-region-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-06T17:00:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0010-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1213.8,
+          "tokens": 882
+        },
+        {
+          "question_id": "svc-0043-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-04T22:30:00Z",
+          "expected": [
+            "supported",
+            "Mei"
+          ],
+          "answer": [
+            "supported",
+            "Mei"
+          ],
+          "cited": [
+            "svc-0043-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 3710.7,
+          "tokens": 504
+        },
+        {
+          "question_id": "svc-0049-oncall-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-06T08:00:00Z",
+          "expected": [
+            "supported",
+            "Arjun"
+          ],
+          "answer": [
+            "supported",
+            "Arjun"
+          ],
+          "cited": [
+            "svc-0049-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 688.9,
+          "tokens": 821
+        },
+        {
+          "question_id": "svc-0103-region-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-11T09:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 450.5,
+          "tokens": 311
+        },
+        {
+          "question_id": "svc-0148-oncall-q1",
+          "scenario": "correction",
+          "as_of": "2026-11-02T16:00:00Z",
+          "expected": [
+            "supported",
+            "Omar"
+          ],
+          "answer": [
+            "supported",
+            "Omar"
+          ],
+          "cited": [
+            "svc-0148-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 11391.1,
+          "tokens": 534
+        },
+        {
+          "question_id": "svc-0004-oncall-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-11T04:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 281.9,
+          "tokens": 312
+        },
+        {
+          "question_id": "svc-0130-oncall-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-05T02:00:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0130-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 528.6,
+          "tokens": 708
+        },
+        {
+          "question_id": "svc-0041-region-q2",
+          "scenario": "correction",
+          "as_of": "2026-11-11T00:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0041-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 956.0,
+          "tokens": 735
+        },
+        {
+          "question_id": "svc-0170-region-q0",
+          "scenario": "correction",
+          "as_of": "2026-11-05T09:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 355.5,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0182-region-q3",
+          "scenario": "chain",
+          "as_of": "2026-11-05T18:00:00Z",
+          "expected": [
+            "supported",
+            "region-b"
+          ],
+          "answer": [
+            "supported",
+            "region-b"
+          ],
+          "cited": [
+            "svc-0182-region-2"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 957.1,
+          "tokens": 838
+        },
+        {
+          "question_id": "svc-0153-region-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-07T00:00:00Z",
+          "expected": [
+            "supported",
+            "region-f"
+          ],
+          "answer": [
+            "supported",
+            "region-f"
+          ],
+          "cited": [
+            "svc-0153-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 7283.6,
+          "tokens": 809
+        },
+        {
+          "question_id": "svc-0095-oncall-q0",
+          "scenario": "chain",
+          "as_of": "2026-11-09T07:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 489.0,
+          "tokens": 307
+        },
+        {
+          "question_id": "svc-0158-region-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-10T01:30:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0158-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1169.1,
+          "tokens": 470
+        },
+        {
+          "question_id": "svc-0195-oncall-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-09T08:00:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0195-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 769.4,
+          "tokens": 545
+        },
+        {
+          "question_id": "svc-0115-region-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-10T05:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0115-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 775.4,
+          "tokens": 698
+        },
+        {
+          "question_id": "svc-0003-region-q3",
+          "scenario": "chain",
+          "as_of": "2026-11-11T06:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0003-region-2"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2508.5,
+          "tokens": 837
+        },
+        {
+          "question_id": "svc-0075-region-q1",
+          "scenario": "chain",
+          "as_of": "2026-11-04T07:30:00Z",
+          "expected": [
+            "supported",
+            "region-c"
+          ],
+          "answer": [
+            "supported",
+            "region-c"
+          ],
+          "cited": [
+            "svc-0075-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 1260.1,
+          "tokens": 501
+        },
+        {
+          "question_id": "svc-0153-oncall-q0",
+          "scenario": "chain",
+          "as_of": "2026-11-08T15:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 538.5,
+          "tokens": 307
+        },
+        {
+          "question_id": "svc-0128-oncall-q2",
+          "scenario": "chain",
+          "as_of": "2026-11-05T15:00:00Z",
+          "expected": [
+            "supported",
+            "Arjun"
+          ],
+          "answer": [
+            "supported",
+            "Arjun"
+          ],
+          "cited": [
+            "svc-0128-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 968.3,
+          "tokens": 765
+        },
+        {
+          "question_id": "svc-0099-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-09T22:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0099-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2086.0,
+          "tokens": 499
+        },
+        {
+          "question_id": "svc-0061-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-10T22:00:00Z",
+          "expected": [
+            "supported",
+            "region-e"
+          ],
+          "answer": [
+            "supported",
+            "region-e"
+          ],
+          "cited": [
+            "svc-0061-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 757.1,
+          "tokens": 467
+        },
+        {
+          "question_id": "svc-0073-region-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-07T12:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "disputed",
+            null
+          ],
+          "cited": [
+            "svc-0073-region-0",
+            "svc-0073-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 846.0,
+          "tokens": 613
+        },
+        {
+          "question_id": "svc-0116-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-03T06:30:00Z",
+          "expected": [
+            "supported",
+            "region-b"
+          ],
+          "answer": [
+            "supported",
+            "region-b"
+          ],
+          "cited": [
+            "svc-0116-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 524.1,
+          "tokens": 499
+        },
+        {
+          "question_id": "svc-0044-oncall-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T00:00:00Z",
+          "expected": [
+            "supported",
+            "Omar"
+          ],
+          "answer": [
+            "supported",
+            "Omar"
+          ],
+          "cited": [
+            "svc-0044-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 10784.5,
+          "tokens": 542
+        },
+        {
+          "question_id": "svc-0035-oncall-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T12:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "disputed",
+            null
+          ],
+          "cited": [
+            "svc-0035-oncall-0",
+            "svc-0035-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 903.7,
+          "tokens": 554
+        },
+        {
+          "question_id": "svc-0128-region-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-11T11:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "disputed",
+            null
+          ],
+          "cited": [
+            "svc-0128-region-0",
+            "svc-0128-region-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 725.6,
+          "tokens": 723
+        },
+        {
+          "question_id": "svc-0042-region-q1",
+          "scenario": "conflict",
+          "as_of": "2026-11-04T15:00:00Z",
+          "expected": [
+            "supported",
+            "region-h"
+          ],
+          "answer": [
+            "supported",
+            "region-h"
+          ],
+          "cited": [
+            "svc-0042-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 594.7,
+          "tokens": 505
+        },
+        {
+          "question_id": "svc-0126-region-q0",
+          "scenario": "conflict",
+          "as_of": "2026-11-07T15:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 576.8,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0117-oncall-q2",
+          "scenario": "conflict",
+          "as_of": "2026-11-05T21:00:00Z",
+          "expected": [
+            "disputed",
+            null
+          ],
+          "answer": [
+            "disputed",
+            null
+          ],
+          "cited": [
+            "svc-0117-oncall-0",
+            "svc-0117-oncall-1"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 945.1,
+          "tokens": 531
+        },
+        {
+          "question_id": "svc-0094-region-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-03T11:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 2768.9,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0013-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-07T06:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0013-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 716.3,
+          "tokens": 464
+        },
+        {
+          "question_id": "svc-0167-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-03T19:30:00Z",
+          "expected": [
+            "supported",
+            "region-f"
+          ],
+          "answer": [
+            "supported",
+            "region-f"
+          ],
+          "cited": [
+            "svc-0167-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 723.3,
+          "tokens": 469
+        },
+        {
+          "question_id": "svc-0196-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-11T23:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0196-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 722.7,
+          "tokens": 535
+        },
+        {
+          "question_id": "svc-0039-region-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T16:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 727.3,
+          "tokens": 306
+        },
+        {
+          "question_id": "svc-0133-region-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T23:30:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0133-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 729.9,
+          "tokens": 492
+        },
+        {
+          "question_id": "svc-0023-oncall-q1",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-02T15:30:00Z",
+          "expected": [
+            "supported",
+            "Priya"
+          ],
+          "answer": [
+            "supported",
+            "Priya"
+          ],
+          "cited": [
+            "svc-0023-oncall-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 628.6,
+          "tokens": 505
+        },
+        {
+          "question_id": "svc-0103-oncall-q0",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-08T17:00:00Z",
+          "expected": [
+            "insufficient",
+            null
+          ],
+          "answer": [
+            "insufficient",
+            null
+          ],
+          "cited": [],
+          "correct": true,
+          "error": null,
+          "latency_ms": 3296.0,
+          "tokens": 307
+        },
+        {
+          "question_id": "svc-0130-region-q2",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-06T19:00:00Z",
+          "expected": [
+            "supported",
+            "region-d"
+          ],
+          "answer": [
+            "supported",
+            "region-d"
+          ],
+          "cited": [
+            "svc-0130-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 804.1,
+          "tokens": 589
+        },
+        {
+          "question_id": "svc-0059-region-q2",
+          "scenario": "unreviewed_noise",
+          "as_of": "2026-11-07T13:00:00Z",
+          "expected": [
+            "supported",
+            "region-a"
+          ],
+          "answer": [
+            "supported",
+            "region-a"
+          ],
+          "cited": [
+            "svc-0059-region-0"
+          ],
+          "correct": true,
+          "error": null,
+          "latency_ms": 744.8,
+          "tokens": 585
+        }
+      ]
+    }
+  }
+}

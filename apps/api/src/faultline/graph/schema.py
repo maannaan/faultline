@@ -65,6 +65,10 @@ def _already_indexed(exc: Exception) -> bool:
 
 
 def ensure_schema(graph: Any, tenant_id: str, schema_version: str) -> None:
+    # Fast path: the version node is written last, so if it is there the indexes
+    # and system nodes are too. Without this, every request re-ran ~24 statements.
+    if _schema_version(graph, schema_version):
+        return
     for label, prop in _INDEXES:
         if not label.isidentifier() or not prop.isidentifier():
             raise RuntimeError("Refusing to build an index from an unsafe name")
@@ -82,27 +86,6 @@ def ensure_schema(graph: Any, tenant_id: str, schema_version: str) -> None:
             )
             raise
 
-    found = records(
-        run(
-            graph,
-            f"MATCH (s:{LABEL_SCHEMA_META} {{id: $id}}) RETURN s.version AS version",
-            {"id": SCHEMA_NODE_ID},
-        )
-    )
-    if found and str(found[0].get("version")) != schema_version:
-        raise FaultlineError(
-            "schema_mismatch",
-            f"Graph schema is {found[0].get('version')}, application expects {schema_version}",
-            500,
-        )
-    run(
-        graph,
-        f"""
-        MERGE (s:{LABEL_SCHEMA_META} {{id: $id}})
-        SET s.version = $version
-        """,
-        {"id": SCHEMA_NODE_ID, "version": schema_version},
-    )
     run(
         graph,
         f"""
@@ -135,3 +118,31 @@ def ensure_schema(graph: Any, tenant_id: str, schema_version: str) -> None:
             "started_at": "1970-01-01T00:00:00Z",
         },
     )
+    run(
+        graph,
+        f"""
+        MERGE (s:{LABEL_SCHEMA_META} {{id: $id}})
+        SET s.version = $version
+        """,
+        {"id": SCHEMA_NODE_ID, "version": schema_version},
+    )
+
+
+def _schema_version(graph: Any, schema_version: str) -> bool:
+    """True when the graph is already set up for this version; raises on a mismatch."""
+    found = records(
+        run(
+            graph,
+            f"MATCH (s:{LABEL_SCHEMA_META} {{id: $id}}) RETURN s.version AS version",
+            {"id": SCHEMA_NODE_ID},
+        )
+    )
+    if not found:
+        return False
+    if str(found[0].get("version")) != schema_version:
+        raise FaultlineError(
+            "schema_mismatch",
+            f"Graph schema is {found[0].get('version')}, application expects {schema_version}",
+            500,
+        )
+    return True

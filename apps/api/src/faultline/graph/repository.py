@@ -602,12 +602,25 @@ def timeline_rows(graph: Any, entity_id: str, limit: int) -> list[dict[str, Any]
 
 
 def observed_assertions(graph: Any, as_of: str) -> list[dict[str, Any]]:
+    return _observed_rows(graph, "WHERE a.observed_at <= $as_of", {"as_of": as_of})
+
+
+def observed_assertions_for_entity(graph: Any, entity_id: str, as_of: str) -> list[dict[str, Any]]:
+    """Same rows as observed_assertions, for one entity, matched through the Entity id index."""
+    return _observed_rows(
+        graph,
+        "WHERE e.id = $entity_id AND a.observed_at <= $as_of",
+        {"entity_id": entity_id, "as_of": as_of},
+    )
+
+
+def _observed_rows(graph: Any, where: str, params: dict[str, Any]) -> list[dict[str, Any]]:
     found = records(
         run(
             graph,
             f"""
             MATCH (a:{LABEL_ASSERTION})-[:{REL_ABOUT}]->(e:{LABEL_ENTITY})
-            WHERE a.observed_at <= $as_of
+            {where}
             MATCH (a)-[:{REL_SUPPORTED_BY}]->(s:{LABEL_SOURCE})
             RETURN a.id AS assertion_id, a.predicate AS predicate, a.value AS value,
                    a.observed_at AS observed_at, a.valid_from AS valid_from,
@@ -619,7 +632,7 @@ def observed_assertions(graph: Any, as_of: str) -> list[dict[str, Any]]:
                    [(a)-[:{REL_CONFLICTS_WITH}]-(other) | other.id] AS conflict_ids
             ORDER BY observed_at
             """,
-            {"as_of": as_of},
+            params,
         )
     )
     rows: list[dict[str, Any]] = []

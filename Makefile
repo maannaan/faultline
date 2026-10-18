@@ -6,7 +6,7 @@ include $(ROOT)/.env
 export
 endif
 
-.PHONY: up down api web seed reset test bench memtest
+.PHONY: up down api web seed reset test bench memtest benchsuite benchllm
 
 up:
 	docker compose up -d --build
@@ -34,3 +34,9 @@ bench:
 
 memtest:
 	cd $(ROOT)/apps/api && uv run python -m faultline.bench.memory_tests
+
+benchsuite:
+	cd $(ROOT)/apps/api && uv run python -m faultline.bench.report
+
+benchllm:
+	cd $(ROOT)/apps/api && uv run python -m faultline.bench.llm_eval

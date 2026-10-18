@@ -1,0 +1,110 @@
+{
+  "meta": {
+    "generated_at": "2026-10-18T18:30:01Z",
+    "seed": 42,
+    "machine": "macOS-26.6.2-x86_64-i386-64bit",
+    "python": "3.12.13",
+    "commit": "db18ca2",
+    "llm_calls": 0
+  },
+  "sizes": [
+    {
+      "entities": 50,
+      "notes_written": 204,
+      "graph": {
+        "nodes": 874,
+        "edges": 2122,
+        "assertions": 204
+      },
+      "write_seconds": 17.73,
+      "writes_per_second": 11.5,
+      "read_sample": 200,
+      "as_of_read_ms": {
+        "p50": 5.99,
+        "p95": 11.79
+      },
+      "full_scan_read_ms": {
+        "p50": 44.71,
+        "p95": 106.2
+      }
+    },
+    {
+      "entities": 250,
+      "notes_written": 1017,
+      "graph": {
+        "nodes": 4326,
+        "edges": 10580,
+        "assertions": 1017
+      },
+      "write_seconds": 62.56,
+      "writes_per_second": 16.3,
+      "read_sample": 200,
+      "as_of_read_ms": {
+        "p50": 3.24,
+        "p95": 5.84
+      },
+      "full_scan_read_ms": {
+        "p50": 106.86,
+        "p95": 202.5
+      }
+    },
+    {
+      "entities": 1000,
+      "notes_written": 4023,
+      "graph": {
+        "nodes": 17100,
+        "edges": 41875,
+        "assertions": 4023
+      },
+      "write_seconds": 235.33,
+      "writes_per_second": 17.1,
+      "read_sample": 200,
+      "as_of_read_ms": {
+        "p50": 4.74,
+        "p95": 13.04
+      },
+      "full_scan_read_ms": {
+        "p50": 299.78,
+        "p95": 681.1
+      }
+    }
+  ],
+  "bisect": [
+    {
+      "history_length": 8,
+      "candidates": 8,
+      "bisect_probes": 3,
+      "linear_probes": 2,
+      "linear_worst_case": 8,
+      "found_culprit": true,
+      "first_bad_as_of": "2026-11-02T00:20:00Z"
+    },
+    {
+      "history_length": 32,
+      "candidates": 32,
+      "bisect_probes": 5,
+      "linear_probes": 2,
+      "linear_worst_case": 32,
+      "found_culprit": true,
+      "first_bad_as_of": "2026-11-02T00:20:00Z"
+    },
+    {
+      "history_length": 128,
+      "candidates": 128,
+      "bisect_probes": 7,
+      "linear_probes": 71,
+      "linear_worst_case": 128,
+      "found_culprit": true,
+      "first_bad_as_of": "2026-11-02T11:50:00Z"
+    },
+    {
+      "history_length": 512,
+      "candidates": 512,
+      "bisect_probes": 9,
+      "linear_probes": 251,
+      "linear_worst_case": 512,
+      "found_culprit": true,
+      "first_bad_as_of": "2026-11-03T17:50:00Z"
+    }
+  ]
+}

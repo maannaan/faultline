@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "generated_at": "2026-10-18T18:22:41Z",
+    "seed": 42,
+    "machine": "macOS-26.6.2-x86_64-i386-64bit",
+    "python": "3.12.13",
+    "commit": "db18ca2",
+    "llm_calls": 0
+  },
+  "entities": 200,
+  "questions": 1213,
+  "timelines": 400,
+  "scenario_counts": {
+    "stable": 66,
+    "correction": 71,
+    "chain": 79,
+    "conflict": 91,
+    "unreviewed_noise": 93
+  },
+  "methods": [
+    {
+      "method": "no_memory",
+      "label": "No memory",
+      "correct": 400,
+      "questions": 1213,
+      "accuracy": 0.3298,
+      "by_scenario": {
+        "stable": {
+          "correct": 66,
+          "questions": 132
+        },
+        "correction": {
+          "correct": 71,
+          "questions": 213
+        },
+        "chain": {
+          "correct": 79,
+          "questions": 316
+        },
+        "conflict": {
+          "correct": 91,
+          "questions": 273
+        },
+        "unreviewed_noise": {
+          "correct": 93,
+          "questions": 279
+        }
+      },
+      "errors": {
+        "missed_answer": 722,
+        "wrong_abstain": 91
+      },
+      "latency_ms_p50": 0.0,
+      "latency_ms_p95": 0.0
+    },
+    {
+      "method": "kv_current",
+      "label": "Key-value store (last write wins, no history)",
+      "correct": 216,
+      "questions": 1213,
+      "accuracy": 0.1781,
+      "by_scenario": {
+        "stable": {
+          "correct": 66,
+          "questions": 132
+        },
+        "correction": {
+          "correct": 71,
+          "questions": 213
+        },
+        "chain": {
+          "correct": 79,
+          "questions": 316
+        },
+        "conflict": {
+          "correct": 0,
+          "questions": 273
+        },
+        "unreviewed_noise": {
+          "correct": 0,
+          "questions": 279
+        }
+      },
+      "errors": {
+        "answered_too_early": 400,
+        "future_value": 413,
+        "missed_conflict": 91,
+        "untrusted_value": 93
+      },
+      "latency_ms_p50": 0.001,
+      "latency_ms_p95": 0.003
+    },
+    {
+      "method": "log_latest",
+      "label": "Append-only log, latest line before the question",
+      "correct": 1029,
+      "questions": 1213,
+      "accuracy": 0.8483,
+      "by_scenario": {
+        "stable": {
+          "correct": 132,
+          "questions": 132
+        },
+        "correction": {
+          "correct": 213,
+          "questions": 213
+        },
+        "chain": {
+          "correct": 316,
+          "questions": 316
+        },
+        "conflict": {
+          "correct": 182,
+          "questions": 273
+        },
+        "unreviewed_noise": {
+          "correct": 186,
+          "questions": 279
+        }
+      },
+      "errors": {
+        "missed_conflict": 91,
+        "untrusted_value": 93
+      },
+      "latency_ms_p50": 0.002,
+      "latency_ms_p95": 0.004
+    },
+    {
+      "method": "log_latest_reviewed",
+      "label": "Append-only log, latest reviewed line",
+      "correct": 1122,
+      "questions": 1213,
+      "accuracy": 0.925,
+      "by_scenario": {
+        "stable": {
+          "correct": 132,
+          "questions": 132
+        },
+        "correction": {
+          "correct": 213,
+          "questions": 213
+        },
+        "chain": {
+          "correct": 316,
+          "questions": 316
+        },
+        "conflict": {
+          "correct": 182,
+          "questions": 273
+        },
+        "unreviewed_noise": {
+          "correct": 279,
+          "questions": 279
+        }
+      },
+      "errors": {
+        "missed_conflict": 91
+      },
+      "latency_ms_p50": 0.002,
+      "latency_ms_p95": 0.003
+    },
+    {
+      "method": "faultline",
+      "label": "Faultline (FalkorDB edges + policy)",
+      "correct": 1213,
+      "questions": 1213,
+      "accuracy": 1.0,
+      "by_scenario": {
+        "stable": {
+          "correct": 132,
+          "questions": 132
+        },
+        "correction": {
+          "correct": 213,
+          "questions": 213
+        },
+        "chain": {
+          "correct": 316,
+          "questions": 316
+        },
+        "conflict": {
+          "correct": 273,
+          "questions": 273
+        },
+        "unreviewed_noise": {
+          "correct": 279,
+          "questions": 279
+        }
+      },
+      "errors": {},
+      "latency_ms_p50": 5.853,
+      "latency_ms_p95": 11.555
+    }
+  ]
+}

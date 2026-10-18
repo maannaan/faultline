@@ -85,11 +85,16 @@ class LabService:
             if repo.find_source(graph, source_id) is None:
                 raise FaultlineError("validation_error", "Source not found", 400)
         as_of = to_iso(as_of_time)
+        rows = [
+            row
+            for entity_id in entities
+            for row in repo.observed_assertions_for_entity(graph, entity_id, as_of)
+        ]
+        rows.sort(key=lambda row: str(row["observed_at"]))
         observed = [
             _observed(row)
-            for row in repo.observed_assertions(graph, as_of)
-            if str(row["entity_id"]) in set(entities)
-            and (predicate is None or str(row["predicate"]) == predicate)
+            for row in rows
+            if (predicate is None or str(row["predicate"]) == predicate)
             and str(row["source_id"]) not in set(excluded)
         ]
         observed = observed[:_MAX_INCLUDED]

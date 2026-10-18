@@ -27,7 +27,6 @@
 14. [Track 02 coverage](#14-track-02-coverage)
 15. [Limits, FAQ and glossary](#15-limits-faq-and-glossary)
 16. [Project layout](#16-project-layout)
-17. [AI assistance](#17-ai-assistance)
 
 ---
 
@@ -237,7 +236,7 @@ Open http://127.0.0.1:3010 for the landing page, or http://127.0.0.1:3010/app/ti
 make test
 ```
 
-That runs 66 tests against the real graph.
+That runs 67 tests against the real graph.
 
 ```bash
 make memtest
@@ -256,7 +255,9 @@ That runs the memory regression tests.
 | `make web` | Run the web app on 127.0.0.1:3010 |
 | `make test` | Run pytest against FalkorDB |
 | `make memtest` | Run `memory-tests.yaml` |
-| `make bench` | Run the baseline comparison, writing `docs/benchmark.json` |
+| `make bench` | Run the small 3-question baseline, writing `docs/benchmark.json` |
+| `make benchsuite` | Run the generated benchmark, scale test and bisect efficiency |
+| `make benchllm` | Run the LLM benchmark (needs `OPENAI_API_KEY`) |
 
 ### Settings (`.env`)
 
@@ -338,7 +339,7 @@ No passwords, keys or SSH access are stored in GitHub.
 
 ## 12. Testing and proof
 
-**Unit and integration tests.** `make test` runs 66 pytest cases against a real FalkorDB, never a mock. They cover:
+**Unit and integration tests.** `make test` runs 67 pytest cases against a real FalkorDB, never a mock. They cover:
 - writing and the policy (supersession, equal-trust conflict, unreviewed sources) and idempotency
 - tenant isolation
 - snapshots, replays, the graph view, bisect, impact and blame
@@ -360,13 +361,53 @@ There are six cases: early region, late region, the disputed on-call pair, the c
 - Delete `(assert-region-b)-[:SUPPORTED_BY]->(source-change-002)` and the answer is no longer `region-b`.
 - Delete `(assert-region-b)-[:SUPERSEDES]->(assert-region-a)` and both stay `current`, so Faultline refuses to choose (`insufficient`).
 
-**Baseline comparison.** `make bench` scores three questions on the seeded graph with the deterministic answerer. No LLM is called. This is a small sample that shows the mechanism, not a general claim against other memory systems.
+### Benchmarks
 
-| Method | Correct | Stale answers | Conflicts surfaced |
+Results are saved in [`apps/api/benchmarks/`](apps/api/benchmarks) and shown live on the [Bench page](https://faultline.mannnan.com/app/bench). Run them yourself with `make benchsuite` (about 10 minutes, no LLM) and `make benchllm` (needs an LLM key). Both write to a separate `tenant-bench` graph and never touch the demo data.
+
+**1. Generated benchmark: 1,213 questions, no LLM.** A seeded generator writes 400 short memory stories (200 services × 2 facts) through the product's real write path. Each story is one of five types: a stable fact, a correction, two corrections in a row, a conflict between two reviewed sources, or a newer unreviewed note. Questions are asked before, between and after the notes, and the right answer comes from the story itself. Every method reads the same rows from FalkorDB. The baselines ignore the edges; Faultline uses them.
+
+| Method | Accuracy | Stable | Correction | 2 corrections | Conflict | Unreviewed noise | How it fails |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Faultline** | **100%** | 100% | 100% | 100% | 100% | 100% | — |
+| Log, latest reviewed line | 92.5% | 100% | 100% | 100% | 66.7% | 100% | picks a side in every conflict (91) |
+| Log, latest line | 84.8% | 100% | 100% | 100% | 66.7% | 66.7% | conflicts + trusts unreviewed notes (93) |
+| No memory | 33.0% | 50% | 33% | 25% | 33% | 33% | only right when nothing is known yet |
+| Key-value store, last write wins | 17.8% | 50% | 33% | 25% | 0% | 0% | answers past questions with values learned later (413) |
+
+To read this honestly: a log that keeps only reviewed notes ties Faultline on plain corrections. Faultline's lead comes from conflicts, untrusted notes and questions about the past. This shows that the semantics hold end to end through the graph. It is not a measure of intelligence, and the stories are synthetic.
+
+**LLM in the loop (Groq, `openai/gpt-oss-20b`, temperature 0).** The same model answers 50 stratified questions twice, with the same rules in the prompt. Only the memory context changes: a chronological note log vs. Faultline's as-of evidence with statuses.
+
+| Context given to the model | Correct | Errors |
+| --- | --- | --- |
+| Raw notes (timestamps, trust tier, "this corrects…") | 46/50 (92%) | 4× picked a side in a conflict, even though the prompt states the rule |
+| **Faultline evidence** | **50/50** | none |
+
+The model is good at following corrections in a short log. What it gets wrong is the disagreement case, which is exactly what the graph makes explicit. Prompts, sample replies and every answer are saved in [`apps/api/benchmarks/llm-openai-gpt-oss-20b.json`](apps/api/benchmarks/llm-openai-gpt-oss-20b.json). It's a small sample (100 calls), so read it as a direction, not a leaderboard.
+
+**2. Scale on FalkorDB** (laptop, seed 42):
+
+| Services | Nodes / edges | Writes/s | As-of read p50 / p95 | Old full-scan read p50 |
+| --- | --- | --- | --- | --- |
+| 50 | 874 / 2,122 | 11.5 | 6.0 / 11.8 ms | 44.7 ms |
+| 250 | 4,326 / 10,580 | 16.3 | 3.2 / 5.8 ms | 106.9 ms |
+| 1,000 | 17,100 / 41,875 | 17.1 | 4.7 / 13.0 ms | 299.8 ms |
+
+As-of reads stay flat because they match one entity through its index. The benchmark exposed two real problems, which are now fixed:
+- **Reads scanned every entity.** That's the "old full-scan" column, which grows with the graph.
+- **Every request re-ran the schema setup.** About 24 statements per call. Fixing it made writes about 5× faster.
+
+Writes are still modest, because each one runs the full policy check.
+
+**3. Bisect efficiency.** Each history hides one reviewed correction among unreviewed notes:
+
+| Recorded notes | Bisect probes | Linear worst case | Culprit found |
 | --- | --- | --- | --- |
-| No memory | 0/3 | 0 | 0/1 |
-| Flat summary, latest line wins | 1/3 | 1 | 0/1 |
-| Faultline | 3/3 | 0 | 1/1 |
+| 8 | 3 | 8 | ✅ |
+| 32 | 5 | 32 | ✅ |
+| 128 | 7 | 128 | ✅ |
+| 512 | 9 | 512 | ✅ |
 
 ## 13. Cypher that does the work
 
@@ -498,7 +539,3 @@ faultline/
 ├── .github/workflows/        CI/CD (test → build → OIDC deploy → smoke check)
 └── Makefile                  everyday commands
 ```
-
-## 17. AI assistance
-
-An AI coding assistant (Claude Code) wrote most of the code, the deploy pipeline, the demo video and this README under the author's direction. The author owns the architecture, the memory policy, the scope decisions and the verification. Every claim above is backed by a test, the live demo, or a stated limit.

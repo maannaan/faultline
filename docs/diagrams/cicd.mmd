@@ -1,5 +1,5 @@
 flowchart LR
-    P["push to main"] --> T1["api job<br/>ruff + 66 pytest tests<br/>against a real FalkorDB"]
+    P["push to main"] --> T1["api job<br/>ruff + 67 pytest tests<br/>against a real FalkorDB"]
     T1 --> T2["memory regression tests<br/>memory-tests.yaml"]
     P --> T3["web job<br/>tsc + next build"]
     T2 --> D["deploy job<br/>OIDC → SSM → deploy.sh"]

@@ -33,8 +33,8 @@ def answer_at(
     """Members and the deterministic claim for one entity at one cutoff, read-only."""
     rows = [
         _observed(row)
-        for row in repo.observed_assertions(graph, as_of)
-        if str(row["entity_id"]) == entity_id and str(row["source_id"]) not in exclude_source_ids
+        for row in repo.observed_assertions_for_entity(graph, entity_id, as_of)
+        if str(row["source_id"]) not in exclude_source_ids
     ]
     members, _ = classify_snapshot(rows, as_of=as_of, time_mode=time_mode)
     return members, select_claim(predicate, members)
@@ -71,9 +71,8 @@ def run_bisect(
     candidates = sorted(
         {
             str(row["observed_at"])
-            for row in repo.observed_assertions(graph, bad_at)
-            if str(row["entity_id"]) == entity_id
-            and str(row["predicate"]) == predicate
+            for row in repo.observed_assertions_for_entity(graph, entity_id, bad_at)
+            if str(row["predicate"]) == predicate
             and good_at < str(row["observed_at"]) <= bad_at
         }
     )

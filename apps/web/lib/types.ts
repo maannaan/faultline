@@ -322,3 +322,66 @@ export type MemoryTestReport = {
     message: string;
   }>;
 };
+
+export type SuiteMethod = {
+  method: string;
+  label: string;
+  correct: number;
+  questions: number;
+  accuracy: number;
+  by_scenario: Record<string, { correct: number; questions: number }>;
+  errors: Record<string, number>;
+  latency_ms_p50: number;
+  latency_ms_p95: number;
+};
+
+export type BenchMeta = { generated_at: string; seed: number; machine: string; commit: string; llm_calls: number };
+
+export type SuiteResult = {
+  meta: BenchMeta;
+  entities: number;
+  questions: number;
+  timelines: number;
+  scenario_counts: Record<string, number>;
+  methods: SuiteMethod[];
+};
+
+export type ScaleResult = {
+  meta: BenchMeta;
+  sizes: Array<{
+    entities: number;
+    notes_written: number;
+    graph: { nodes: number; edges: number; assertions: number };
+    writes_per_second: number;
+    as_of_read_ms: { p50: number; p95: number };
+    full_scan_read_ms: { p50: number; p95: number };
+  }>;
+  bisect: Array<{
+    history_length: number;
+    candidates: number;
+    bisect_probes: number;
+    linear_probes: number;
+    linear_worst_case: number;
+    found_culprit: boolean;
+  }>;
+};
+
+export type LlmCondition = {
+  correct: number;
+  questions: number;
+  accuracy: number;
+  errors: Record<string, number>;
+  by_scenario: Record<string, { correct: number; questions: number }>;
+  latency_ms_p50: number;
+  tokens_total: number;
+};
+
+export type LlmResult = {
+  meta: BenchMeta;
+  model: string;
+  sample: number;
+  prompt_version: string;
+  conditions: { raw_notes: LlmCondition; faultline_evidence: LlmCondition };
+};
+
+export type BenchmarkResults = { suite: SuiteResult | null; scale: ScaleResult | null; llm: LlmResult[] };

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -579,3 +579,11 @@ class MemoryTestReport(BaseModel):
     passed: int
     failed: int
     cases: list[MemoryTestCase]
+
+
+class BenchmarkResults(BaseModel):
+    """Saved runs of the generated benchmark, scale test and LLM evaluation."""
+
+    suite: dict[str, Any] | None = None
+    scale: dict[str, Any] | None = None
+    llm: list[dict[str, Any]] = Field(default_factory=list)

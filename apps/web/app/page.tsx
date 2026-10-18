@@ -62,12 +62,14 @@ const VERBS = [
   },
 ] as const;
 
-/* Numbers from docs/benchmark.json (make bench). Three synthetic questions on one seeded project. */
+/* From apps/api/benchmarks/suite.json (make benchsuite, seed 42): 1,213 generated questions, no LLM. */
 const BENCH = [
-  { method: "No memory", correct: 0, stale: 0, conflicts: 0, evidence: "0%" },
-  { method: "Flat summary", correct: 1, stale: 1, conflicts: 0, evidence: "0%" },
-  { method: "Faultline", correct: 3, stale: 0, conflicts: 1, evidence: "100%" },
+  { method: "Key-value store", note: "last write wins, no history", correct: 216, wrongTime: 413, untrusted: 93, conflicts: 0 },
+  { method: "Log, latest reviewed line", note: "strongest baseline", correct: 1122, wrongTime: 0, untrusted: 0, conflicts: 0 },
+  { method: "Faultline", note: "FalkorDB edges + policy", correct: 1213, wrongTime: 0, untrusted: 0, conflicts: 91 },
 ] as const;
+const BENCH_TOTAL = 1213;
+const BENCH_CONFLICTS = 91;
 
 const CYPHER = `MATCH (a:Assertion)-[:ABOUT]->(e:Entity)
 WHERE a.observed_at <= $as_of
@@ -255,9 +257,10 @@ export default function Landing() {
       <section id="bench" className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <Reveal className="max-w-2xl">
           <p className="eyebrow">Benchmark</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight">Same questions. Three kinds of memory.</h2>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight">1,213 questions. Same data. Different memory.</h2>
           <p className="mt-4 text-muted">
-            Early region, late region, and on-call owner, asked against the seeded graph with the deterministic answerer.
+            400 generated memory stories (corrections, conflicts, unreviewed notes), questions asked before, between and after
+            each note. Every method reads the same rows from FalkorDB; only Faultline uses the edges.
           </p>
         </Reveal>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -274,23 +277,28 @@ export default function Landing() {
                     <h3 className="text-sm font-medium">{row.method}</h3>
                     {hero ? <ChartColumn className="size-4 text-fault" /> : null}
                   </div>
+                  <p className="text-[11px] text-dim">{row.note}</p>
                   <p className="mt-5 text-5xl font-semibold tracking-tight">
-                    {row.correct}
-                    <span className="text-2xl text-dim">/3</span>
+                    {((row.correct / BENCH_TOTAL) * 100).toFixed(1)}
+                    <span className="text-2xl text-dim">%</span>
                   </p>
-                  <p className="text-xs text-dim">correct</p>
+                  <p className="mono text-xs text-dim">
+                    {row.correct.toLocaleString()} / {BENCH_TOTAL.toLocaleString()} correct
+                  </p>
                   <dl className="mono mt-5 grid grid-cols-3 gap-2 text-[11px]">
                     <div>
-                      <dt className="text-dim">stale</dt>
-                      <dd className={row.stale ? "text-disputed" : "text-ink"}>{row.stale}</dd>
+                      <dt className="text-dim">future values</dt>
+                      <dd className={row.wrongTime ? "text-disputed" : "text-ink"}>{row.wrongTime}</dd>
                     </div>
                     <div>
-                      <dt className="text-dim">evidence</dt>
-                      <dd className="text-ink">{row.evidence}</dd>
+                      <dt className="text-dim">untrusted</dt>
+                      <dd className={row.untrusted ? "text-disputed" : "text-ink"}>{row.untrusted}</dd>
                     </div>
                     <div>
                       <dt className="text-dim">conflicts</dt>
-                      <dd className="text-ink">{row.conflicts}/1</dd>
+                      <dd className={row.conflicts === BENCH_CONFLICTS ? "text-ok" : "text-disputed"}>
+                        {row.conflicts}/{BENCH_CONFLICTS}
+                      </dd>
                     </div>
                   </dl>
                 </div>
@@ -298,9 +306,22 @@ export default function Landing() {
             );
           })}
         </div>
-        <p className="mt-6 text-xs leading-5 text-dim">
-          Three synthetic questions on one seeded project (26 nodes, 49 edges). This shows the mechanism, not a general advantage over
-          other memory systems. Reproduce with <span className="mono">make bench</span>.
+        <div className="mono mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-muted">
+          <span>as-of read p50 <span className="text-ink">4.7 ms</span> at 17,100 nodes</span>
+          <span>bisect <span className="text-ink">9 probes</span> for 512 notes</span>
+          <span>
+            gpt-oss-20b: <span className="text-ink">46/50</span> with raw notes, <span className="text-ink">50/50</span> with Faultline
+            evidence
+          </span>
+          <span>memory regression tests in CI on every push</span>
+        </div>
+        <p className="mt-4 text-xs leading-5 text-dim">
+          Synthetic stories, so this shows the memory semantics hold end to end through the graph, not intelligence. A log that
+          keeps only reviewed notes ties Faultline on plain corrections. Full results, scale and the LLM run are on the{" "}
+          <Link href="/app/bench" className="text-muted underline underline-offset-2 hover:text-ink">
+            Bench page
+          </Link>
+          . Reproduce with <span className="mono">make benchsuite</span>.
         </p>
       </section>
 
