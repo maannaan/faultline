@@ -222,3 +222,46 @@ export type BisectResult = {
   culprit_event_ids: string[];
   explanation: string;
 };
+
+export type ImpactReport = {
+  assertion: {
+    assertion_id: string;
+    predicate: string;
+    value: string;
+    status_now: string;
+    superseded_by: string[];
+    conflicts_with: string[];
+  };
+  snapshots: Array<{
+    snapshot_id: string;
+    as_of: string;
+    status_then: string;
+    outdated: boolean;
+    replay_count: number;
+    handoff_count: number;
+  }>;
+  replays: Array<{
+    replay_id: string;
+    question: string;
+    snapshot_id: string;
+    as_of: string;
+    claim_status: string;
+    claim_value: string | null;
+    status_then: string;
+    outdated: boolean;
+  }>;
+  handoffs: Array<{
+    handoff_id: string;
+    task_id: string;
+    objective: string;
+    task_status: string;
+    snapshot_id: string;
+    as_of: string;
+    status_then: string;
+    referenced: boolean;
+    carried_as_conflict: boolean;
+    outdated: boolean;
+  }>;
+  outdated_count: number;
+  summary: string;
+};

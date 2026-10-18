@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 from faultline.auth import require_tenant
 from faultline.bench.ablation import run_ablation
 from faultline.coordination.handoff import CoordinationService
+from faultline.graph.impact import assertion_impact
 from faultline.graph.subgraph import build_graph_view
 from faultline.memory.ingest import ingest_note
 from faultline.memory.service import MemoryService
@@ -30,6 +31,7 @@ from faultline.schemas.models import (
     GraphView,
     HandoffCreate,
     HealthResponse,
+    ImpactReport,
     NoteCreate,
     NoteIngestResult,
     ReplayCreate,
@@ -155,6 +157,15 @@ def get_assertion(
     service: Annotated[MemoryService, Depends(get_service)],
 ) -> AssertionResult:
     return service.get_assertion(tenant_id, assertion_id)
+
+
+@router.get("/v1/assertions/{assertion_id}/impact", response_model=ImpactReport)
+def get_impact(
+    assertion_id: str,
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+) -> ImpactReport:
+    return assertion_impact(request.app.state.store.graph_for_tenant(tenant_id), assertion_id)
 
 
 @router.get("/v1/assertions/{assertion_id}/evidence", response_model=EvidencePath)

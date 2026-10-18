@@ -457,3 +457,54 @@ class BisectResult(BaseModel):
     culprit_source_ids: list[str]
     culprit_event_ids: list[str]
     explanation: str
+
+
+class ImpactAssertion(BaseModel):
+    assertion_id: str
+    predicate: str
+    value: str
+    status_now: str
+    superseded_by: list[str]
+    conflicts_with: list[str]
+
+
+class ImpactSnapshot(BaseModel):
+    snapshot_id: str
+    as_of: str
+    status_then: str
+    outdated: bool
+    replay_count: int
+    handoff_count: int
+
+
+class ImpactReplay(BaseModel):
+    replay_id: str
+    question: str
+    snapshot_id: str
+    as_of: str
+    claim_status: str
+    claim_value: str | None = None
+    status_then: str
+    outdated: bool
+
+
+class ImpactHandoff(BaseModel):
+    handoff_id: str
+    task_id: str
+    objective: str
+    task_status: str
+    snapshot_id: str
+    as_of: str
+    status_then: str
+    referenced: bool
+    carried_as_conflict: bool
+    outdated: bool
+
+
+class ImpactReport(BaseModel):
+    assertion: ImpactAssertion
+    snapshots: list[ImpactSnapshot]
+    replays: list[ImpactReplay]
+    handoffs: list[ImpactHandoff]
+    outdated_count: int
+    summary: str
