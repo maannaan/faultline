@@ -104,7 +104,7 @@ export default function Landing() {
       </header>
 
       <section className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-20 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pt-16">
-        <Reveal>
+        <div className="fade-up">
           <a
             href="https://www.wemakedevs.org/hackathons/falkordb"
             className="pill pill-neutral !px-3 !py-1 !text-xs hover:text-ink"
@@ -134,10 +134,10 @@ export default function Landing() {
             <span>1 graph per tenant</span>
             <span>0 silent overwrites</span>
           </div>
-        </Reveal>
-        <Reveal delay={0.15}>
+        </div>
+        <div className="fade-up fade-up-delay">
           <HeroGraph />
-        </Reveal>
+        </div>
       </section>
 
       <section className="relative z-10 border-y border-line bg-panel/40">
