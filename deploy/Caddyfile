@@ -1,4 +1,5 @@
-{$SITE_HOST} {
+# SITE_HOST is the public domain. FALLBACK_HOST is an optional second name (e.g. <ip>.sslip.io).
+{$SITE_HOST} {$FALLBACK_HOST:localhost} {
 	encode gzip
 	reverse_proxy web:3010
 }
