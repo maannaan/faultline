@@ -67,17 +67,45 @@ jobs:
     steps:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          SITE_HOST: ${{ secrets.SITE_HOST }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          command_timeout: 20m
+          envs: SITE_HOST
+          command_timeout: 25m
           script: |
             set -e
+            if [ ! -d ~/faultline/.git ]; then
+              git clone --quiet https://github.com/${{ github.repository }}.git ~/faultline
+            fi
             cd ~/faultline
             git fetch --quiet origin main
             git reset --hard origin/main
+            # First deploy only: create the server .env with random secrets. It never leaves the host.
+            if [ ! -f .env ]; then
+              umask 077
+              API_KEY=$(openssl rand -hex 24)
+              cat > .env <<ENV
+            SITE_HOST=$SITE_HOST
+            COMPOSE_PROFILES=local-graph
+            APP_ENV=development
+            FALKORDB_HOST=falkordb
+            FALKORDB_PORT=6379
+            FALKORDB_PASSWORD=$(openssl rand -hex 24)
+            AUTH_KEYS=$API_KEY:tenant-synthetic,$(openssl rand -hex 24):tenant-other
+            FAULTLINE_API_KEY=$API_KEY
+            OPENAI_API_KEY=
+            ENV
+              sed -i 's/^ *//' .env
+            fi
             docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            # Seeding uses fixed idempotency keys, so repeating it is a no-op.
+            for i in $(seq 1 20); do
+              docker compose -f docker-compose.prod.yml exec -T api python -m faultline.graph.seed && break
+              sleep 3
+            done
             docker image prune -f
       - name: Smoke check
         run: |
