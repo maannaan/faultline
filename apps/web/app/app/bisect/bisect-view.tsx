@@ -147,17 +147,17 @@ function BisectReport({ result }: { result: BisectResult }) {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.35 }}
-              className="grid grid-cols-[72px_150px_1fr] items-center gap-3 rounded-md px-2 py-1.5 hover:bg-white/[0.02] sm:grid-cols-[80px_170px_1fr_auto]"
+              className="grid grid-cols-[64px_1fr_auto] items-center gap-3 rounded-md px-2 py-1.5 hover:bg-white/[0.02]"
             >
               <span className={probe.verdict === "bad" ? "text-disputed" : "text-ok"}>{label}</span>
-              <span className="text-dim">{formatTime(probe.as_of)}</span>
-              <span className="truncate text-ink">
-                {probe.value ?? <span className="text-muted">no value</span>}
-                <span className="ml-2 text-dim">{probe.evidence_ids.join(", ")}</span>
+              <span className="min-w-0">
+                <span className="block truncate text-ink">
+                  {probe.value ?? <span className="text-muted">no value</span>}
+                  <span className="ml-2 text-dim">{probe.evidence_ids.join(", ")}</span>
+                </span>
+                <span className="block text-[10px] text-dim">{formatTime(probe.as_of)}</span>
               </span>
-              <span className="hidden sm:block">
-                <StatusPill status={probe.status} />
-              </span>
+              <StatusPill status={probe.status} />
             </motion.li>
           ))}
         </ol>
