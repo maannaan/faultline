@@ -107,7 +107,11 @@ jobs:
       - name: Smoke check
         run: |
           for _ in $(seq 1 30); do
-            curl -fsS "https://$SITE_HOST/api/faultline/health" && exit 0
+            if curl -fsS "https://$SITE_HOST/api/faultline/health/ready" >/dev/null \
+              && curl -fsS "https://$SITE_HOST/" | grep -q "git for agent memory"; then
+              echo "site and graph are up"
+              exit 0
+            fi
             sleep 5
           done
           exit 1

@@ -1,19 +1,19 @@
 FROM node:22-alpine AS deps
-WORKDIR /app
+WORKDIR /srv/web
 COPY apps/web/package.json apps/web/package-lock.json ./
 RUN npm ci
 
 FROM node:22-alpine AS build
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /srv/web
+COPY --from=deps /srv/web/node_modules ./node_modules
 COPY apps/web ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 FROM node:22-alpine
-WORKDIR /app
+WORKDIR /srv/web
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3010 HOSTNAME=0.0.0.0
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /srv/web/.next/standalone ./
+COPY --from=build /srv/web/.next/static ./.next/static
 EXPOSE 3010
 CMD ["node", "server.js"]
