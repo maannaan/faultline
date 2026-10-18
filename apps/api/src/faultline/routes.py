@@ -15,6 +15,7 @@ from faultline.graph.subgraph import build_graph_view
 from faultline.memory.ingest import ingest_note
 from faultline.memory.service import MemoryService
 from faultline.replay.bisect import run_bisect
+from faultline.replay.blame import blame_replay, list_replays
 from faultline.replay.service import LabService
 from faultline.schemas.models import (
     AblationReport,
@@ -23,6 +24,7 @@ from faultline.schemas.models import (
     AssertionResult,
     BisectCreate,
     BisectResult,
+    BlameReport,
     CompleteCreate,
     EntityList,
     EventCreate,
@@ -36,6 +38,7 @@ from faultline.schemas.models import (
     NoteIngestResult,
     ReplayCreate,
     ReplayDiff,
+    ReplayList,
     ReplayResult,
     RevalidateCreate,
     SnapshotCreate,
@@ -270,6 +273,24 @@ def get_graph(
         time_mode=time_mode,
         exclude_source_ids=excluded,
     )
+
+
+@router.get("/v1/replays", response_model=ReplayList)
+def get_replays(
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+    limit: Annotated[int, Query(ge=1, le=50)] = 20,
+) -> ReplayList:
+    return list_replays(request.app.state.store.graph_for_tenant(tenant_id), limit)
+
+
+@router.get("/v1/replays/{replay_id}/blame", response_model=BlameReport)
+def get_blame(
+    replay_id: str,
+    request: Request,
+    tenant_id: Annotated[str, Depends(require_tenant)],
+) -> BlameReport:
+    return blame_replay(request.app.state.store.graph_for_tenant(tenant_id), replay_id)
 
 
 @router.post("/v1/bisect", response_model=BisectResult)

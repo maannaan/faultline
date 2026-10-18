@@ -508,3 +508,53 @@ class ImpactReport(BaseModel):
     handoffs: list[ImpactHandoff]
     outdated_count: int
     summary: str
+
+
+class ReplaySummary(BaseModel):
+    replay_id: str
+    question: str
+    predicate: str
+    snapshot_id: str
+    as_of: str
+    created_at: str
+    claim_status: str
+    claim_value: str | None = None
+
+
+class ReplayList(BaseModel):
+    replays: list[ReplaySummary]
+
+
+class BlameHop(BaseModel):
+    assertion_id: str
+    predicate: str
+    value: str
+    status_then: str | None = None
+    status_now: str
+    observed_at: str
+    source_id: str | None = None
+    source_title: str | None = None
+    trust_tier: str | None = None
+    excerpt: str | None = None
+    event_id: str | None = None
+    session_id: str | None = None
+    agent_id: str | None = None
+
+
+class BlameClaim(BaseModel):
+    claim_id: str
+    status: str
+    value: str | None = None
+    wording: str
+    chain: list[BlameHop]
+
+
+class BlameReport(BaseModel):
+    replay_id: str
+    question: str
+    predicate: str
+    model_version: str
+    prompt_version: str
+    snapshot_id: str
+    as_of: str
+    claims: list[BlameClaim]

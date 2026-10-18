@@ -265,3 +265,41 @@ export type ImpactReport = {
   outdated_count: number;
   summary: string;
 };
+
+export type ReplaySummary = {
+  replay_id: string;
+  question: string;
+  predicate: string;
+  snapshot_id: string;
+  as_of: string;
+  created_at: string;
+  claim_status: string;
+  claim_value: string | null;
+};
+
+export type BlameHop = {
+  assertion_id: string;
+  predicate: string;
+  value: string;
+  status_then: string | null;
+  status_now: string;
+  observed_at: string;
+  source_id: string | null;
+  source_title: string | null;
+  trust_tier: string | null;
+  excerpt: string | null;
+  event_id: string | null;
+  session_id: string | null;
+  agent_id: string | null;
+};
+
+export type BlameReport = {
+  replay_id: string;
+  question: string;
+  predicate: string;
+  model_version: string;
+  prompt_version: string;
+  snapshot_id: string;
+  as_of: string;
+  claims: Array<{ claim_id: string; status: string; value: string | null; wording: string; chain: BlameHop[] }>;
+};
