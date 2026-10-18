@@ -1,55 +1,112 @@
-# Faultline demo script
+# Faultline demo video script (2:30–3:00)
 
-Record about two minutes. Start from a seeded graph: `make reset`, `make seed`, `make api`, `make web`. The scored answers below come from the deterministic snapshot rules. Groq may phrase a live note, and a wording miss does not change the evidence.
+Record on the live site, **https://faultline.mannnan.com**, in a desktop browser at about 1440×900, with dark UI and no extensions visible. Every answer shown comes from the production FalkorDB graph and the deterministic policy. No LLM is needed for any of it.
 
-## 0:00–0:15 Problem
+**Before you record:**
+- Open these tabs in order:
+  1. landing `/`
+  2. `/app/timeline`
+  3. `/app/replay`
+  4. `/app/blame`
+  5. `/app/bisect`
+  6. `/app/impact`
+  7. `/app/handoff`
+  8. `/app/bench`
+  9. the GitHub Actions page `github.com/maannaan/faultline/actions`
+- Wait for the "FalkorDB connected" pill on an app page.
+- Speak slowly. Each section has a click list and one or two sentences to say.
 
-Stay on the timeline at http://127.0.0.1:3010 before selecting a cutoff.
+---
 
-Say: "An agent can repeat a deploy region that was already corrected, and the next agent never sees that the on-call owner is still disputed."
+## 0:00–0:15 · Hook (landing page)
 
-## 0:15–0:40 Timeline
+Show the landing hero and let the animated graph play one loop.
 
-Select Project Atlas. Leave the cutoff empty so the board shows status now.
+> "Agents change their answers, and nobody can say why. Developers have git blame, diff and bisect for code. Faultline is git for agent memory, built on FalkorDB."
 
-Say: "region-b is current and cites the change record. region-a is superseded. Priya and Jordan are both disputed."
+Scroll once so the terminal strip starts typing, then stop.
 
-## 0:40–1:05 Two cutoffs
+## 0:15–0:45 · `checkout`: the Time Machine (`/app/timeline`)
 
-Set the cutoff to 15 Oct 2026, 17:30 local, which is `2026-10-15T12:00:00Z`. Show cutoff.
+Click **Replay history** under the Evidence Graph and let it play from "before" to "now".
 
-Say: "At that moment only region-a was known, and it was current. region-b did not exist yet."
+> "Every node is a FalkorDB record: agent, session, memory event, assertion, source. As I move through time, statuses are recomputed from the edges visible at that moment. On the 15th, region-a is current. On the 16th, a reviewed change record arrives. The SUPERSEDES edge turns region-a grey, and two on-call sources disagree, so Priya and Jordan are both disputed."
 
-Set the cutoff to 16 Oct 2026, 18:30 local, which is `2026-10-16T13:00:00Z`. Show cutoff.
+Click the `region-b` node to open the evidence sheet for a second.
 
-Say: "By the next afternoon region-b is current because it supersedes region-a. The on-call pair is still unresolved."
+## 0:45–1:10 · `diff`: the Replay Lab (`/app/replay`)
 
-## 1:05–1:30 Replay Lab
+Click **Run replay** with the defaults.
 
-Open http://127.0.0.1:3010/replay. Keep the rollout question and `deploy_region`. Run replay.
+> "Same question, two snapshots. Region-a on the 15th, region-b on the 16th. The diff is computed from graph ids, not wording, and it names the edge: assert-region-b SUPERSEDES assert-region-a."
 
-Say: "The same question cites region-a on the early snapshot and region-b on the late one. The diff names assert-region-b SUPERSEDES assert-region-a."
+Tick **Counterfactual** and click **Run replay** again.
 
-Check "Exclude source-change-002" and run again.
+> "Exclude the change record and the answer falls back to region-a. It's a filter; nothing is deleted."
 
-Say: "Without that source, the candidate snapshot falls back to region-a. The exclusion is a filter. The edge is still in the graph."
+## 1:10–1:25 · `blame` (`/app/blame`)
 
-## 1:30–1:50 Conflict and handoff
+Click **Ask: Region · 16 Oct**.
 
-Change the predicate to `oncall_owner` and run replay on the late cutoff.
+> "Blame follows the answer edge by edge: claim, assertion, the reviewed source, the memory event, the session, and the agent that recorded it."
 
-Say: "Faultline does not pick Priya or Jordan. The claim is disputed."
+## 1:25–1:50 · `bisect` (`/app/bisect`)
 
-Open http://127.0.0.1:3010/handoff. Create the handoff with both memory refs. Accept as agent-release.
+Click **Run bisect** (deploy_region, good on 15 Oct, bad on 16 Oct). Let the log animate.
 
-Say: "The release agent receives region-b and still sees both on-call assertions. The client cannot drop that dispute."
+> "The answer was right on the 15th and different on the 16th. Bisect binary-searches the recorded memory with as-of queries and names the culprit: source-change-002, event evt-assert-region-b."
 
-Optional, if time remains: restart FalkorDB with `docker compose restart falkordb`, reload the handoff page's last task only if you still have its id, or reload the timeline. Say: "The graph is FalkorDB. A restart keeps the assertions."
+Switch the question to `oncall_owner` and run it again.
 
-## 1:50–2:05 Ablation
+> "For on-call, it finds the moment the second source made it disputed."
 
-Open http://127.0.0.1:3010/bench. Click "Run ablation".
+## 1:50–2:10 · `impact` (`/app/impact`)
 
-Say: "Deleting the SUPPORTED_BY edge removes region-b from the answer. Deleting SUPERSEDES leaves both regions current, and Faultline refuses to choose. Both edges are restored."
+Select the `region-a` chip (it should already be selected). Click **Simulate an agent that acted on 15 Oct**.
 
-Point at the restored badge. Stop.
+> "A fact got corrected. What already relied on it? Faultline walks the graph backwards from region-a to every snapshot, replay answer and handoff, and flags those that saw it as current. That's the blast radius of a correction."
+
+## 2:10–2:30 · `handoff` (`/app/handoff`)
+
+Click **Create handoff**, then **Accept as agent-release**.
+
+> "The planner hands the rollout to the release agent. The server copies the on-call dispute onto the handoff. The client can't drop it, so the next agent can't act as if it were settled."
+
+If time allows, click **Try an expired handoff** and point at `409 snapshot_stale`.
+
+## 2:30–2:50 · `test`: proof the graph does the work (`/app/bench`)
+
+Point at **Memory regression tests: 6 passed**, then click **Run ablation**.
+
+> "Memory has regression tests: at this time, this question must give this answer. They run in CI on every push. And the ablation deletes a real FalkorDB edge: remove SUPPORTED_BY and region-b is gone; remove SUPERSEDES and Faultline refuses to choose. Then both edges are restored."
+
+Optionally cut for 3 seconds to the GitHub Actions tab showing green `api`, `web` and `deploy` jobs.
+
+## 2:50–3:00 · Close (back to landing)
+
+> "Faultline: blame, diff, bisect and test what your agents remembered. Live at faultline.mannnan.com, code on GitHub. Built for Graph Hacks Track 02 on FalkorDB."
+
+---
+
+## Submission checklist
+
+- [ ] Video uploaded (YouTube, unlisted is fine). Link pasted into the README's top line and the submission form
+- [ ] Repo is public: https://github.com/maannaan/faultline
+- [ ] Live URL: https://faultline.mannnan.com
+- [ ] Track: **02, Agent Memory and Coordination**
+- [ ] AI assistance disclosed (README, last section)
+- [ ] Submitted before **23:59 IST, 18 Oct 2026**
+
+## 60-second pitch (for the form)
+
+When an AI agent gives a stale or contradictory answer, developers can't reproduce what it knew or why the answer changed. Faultline is git for agent memory, built on FalkorDB.
+
+Every fact is an assertion linked to its source and observation time. Corrections are SUPERSEDES edges and disagreements are CONFLICTS_WITH edges, so nothing is overwritten. On top of that graph, Faultline provides:
+- `checkout`: reconstruct memory at any moment
+- `diff`: compare the same question across snapshots and name the edge that changed the answer
+- `blame`: trace an answer back to the agent that recorded it
+- `bisect`: find the exact event that flipped an answer
+- `impact`: find every replay and handoff that relied on a corrected fact
+- `handoff`: carry unresolved conflicts to the next agent
+
+Memory regression tests run in CI on every push. Edge ablation shows the graph does the work: delete one relationship and the answer changes.
